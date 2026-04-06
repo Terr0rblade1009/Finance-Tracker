@@ -4,12 +4,12 @@ import SwiftData
 @Model
 final class Expense {
     @Attribute(.unique) var id: UUID
-    var amount: Double
+    var amount: Decimal
     var note: String
     var date: Date
     var isIncome: Bool
     var receiptImageData: Data?
-    var sourceType: String
+    var sourceType: SourceType
     var createdAt: Date
 
     @Relationship var category: ExpenseCategory?
@@ -17,14 +17,14 @@ final class Expense {
     @Relationship(inverse: \User.expenses) var user: User?
 
     init(
-        amount: Double,
+        amount: Decimal,
         note: String = "",
         date: Date = Date(),
         isIncome: Bool = false,
         category: ExpenseCategory? = nil,
         account: Account? = nil,
         receiptImageData: Data? = nil,
-        sourceType: String = "manual"
+        sourceType: SourceType = .manual
     ) {
         self.id = UUID()
         self.amount = amount
@@ -39,10 +39,7 @@ final class Expense {
     }
 
     var formattedAmount: String {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .currency
-        formatter.locale = Locale(identifier: "en_SG")
-        return formatter.string(from: NSNumber(value: amount)) ?? "$0.00"
+        amount.currencyString
     }
 
     var formattedDate: String {
@@ -55,7 +52,7 @@ final class Expense {
 // MARK: - Source types
 
 extension Expense {
-    enum SourceType: String, CaseIterable {
+    enum SourceType: String, CaseIterable, Codable {
         case manual = "manual"
         case camera = "camera"
         case ocr = "ocr"

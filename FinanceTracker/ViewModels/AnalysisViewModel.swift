@@ -5,8 +5,8 @@ import SwiftData
 class AnalysisViewModel {
     var period: AnalysisPeriod = .monthly
     var expenses: [Expense] = []
-    var totalExpense: Double = 0
-    var totalIncome: Double = 0
+    var totalExpense: Decimal = 0
+    var totalIncome: Decimal = 0
     var categoryBreakdown: [CategorySummary] = []
     var dailyTrend: [DailyAmount] = []
 
@@ -15,7 +15,7 @@ class AnalysisViewModel {
         let categoryName: String
         let categoryIcon: String
         let categoryColorHex: String
-        let amount: Double
+        let amount: Decimal
         let percentage: Double
         let count: Int
     }
@@ -23,8 +23,8 @@ class AnalysisViewModel {
     struct DailyAmount: Identifiable {
         let id = UUID()
         let date: Date
-        let expense: Double
-        let income: Double
+        let expense: Decimal
+        let income: Decimal
     }
 
     func loadData(modelContext: ModelContext) throws {
@@ -39,37 +39,29 @@ class AnalysisViewModel {
 
         expenses = try modelContext.fetch(descriptor)
 
-        totalExpense = expenses.filter { !$0.isIncome }.reduce(0) { $0 + $1.amount }
-        totalIncome = expenses.filter { $0.isIncome }.reduce(0) { $0 + $1.amount }
+        // M4: Use shared extension
+        totalExpense = expenses.total(isIncome: false)
+        totalIncome = expenses.total(isIncome: true)
 
         buildCategoryBreakdown()
         buildDailyTrend(calendar: calendar, startDate: startDate, endDate: endDate)
     }
 
+    // M4: Uses shared categoryBreakdown extension
     private func buildCategoryBreakdown() {
-        let expenseItems = expenses.filter { !$0.isIncome }
-        var grouping: [String: (icon: String, colorHex: String, amount: Double, count: Int)] = [:]
+        let breakdown = expenses.categoryBreakdown(isIncome: false)
+        let total = totalExpense > 0 ? totalExpense : Decimal(1)
 
-        for expense in expenseItems {
-            let name = expense.category?.localizedName ?? L("其他")
-            let icon = expense.category?.icon ?? "ellipsis.circle.fill"
-            let colorHex = expense.category?.colorHex ?? "BDBDBD"
-            let existing = grouping[name] ?? (icon: icon, colorHex: colorHex, amount: 0, count: 0)
-            grouping[name] = (icon: icon, colorHex: colorHex, amount: existing.amount + expense.amount, count: existing.count + 1)
-        }
-
-        let total = max(totalExpense, 1)
-        categoryBreakdown = grouping.map { (name, data) in
+        categoryBreakdown = breakdown.map { item in
             CategorySummary(
-                categoryName: name,
-                categoryIcon: data.icon,
-                categoryColorHex: data.colorHex,
-                amount: data.amount,
-                percentage: (data.amount / total) * 100,
-                count: data.count
+                categoryName: item.name,
+                categoryIcon: item.icon,
+                categoryColorHex: item.colorHex,
+                amount: item.amount,
+                percentage: NSDecimalNumber(decimal: (item.amount / total) * 100).doubleValue,
+                count: item.count
             )
         }
-        .sorted { $0.amount > $1.amount }
     }
 
     private func buildDailyTrend(calendar: Calendar, startDate: Date, endDate: Date) {
@@ -80,8 +72,8 @@ class AnalysisViewModel {
             let dayEnd = calendar.date(byAdding: .day, value: 1, to: current)!
             let dayExpenses = expenses.filter { $0.date >= current && $0.date < dayEnd }
 
-            let dayExpense = dayExpenses.filter { !$0.isIncome }.reduce(0) { $0 + $1.amount }
-            let dayIncome = dayExpenses.filter { $0.isIncome }.reduce(0) { $0 + $1.amount }
+            let dayExpense = dayExpenses.total(isIncome: false)
+            let dayIncome = dayExpenses.total(isIncome: true)
 
             if dayExpense > 0 || dayIncome > 0 {
                 trend.append(DailyAmount(date: current, expense: dayExpense, income: dayIncome))
@@ -114,7 +106,7 @@ class AnalysisViewModel {
         }
     }
 
-    var netAmount: Double { totalIncome - totalExpense }
+    var netAmount: Decimal { totalIncome - totalExpense }
 
     var formattedTotalExpense: String { totalExpense.currencyString }
     var formattedTotalIncome: String { totalIncome.currencyString }

@@ -5,8 +5,8 @@ import SwiftData
 final class FixedExpense {
     @Attribute(.unique) var id: UUID
     var name: String
-    var annualAmount: Double
-    var frequency: String
+    var annualAmount: Decimal
+    var frequency: Frequency
     var categoryIcon: String
     var categoryColorHex: String
     var startDate: Date
@@ -16,8 +16,8 @@ final class FixedExpense {
 
     init(
         name: String,
-        annualAmount: Double,
-        frequency: String = "monthly",
+        annualAmount: Decimal,
+        frequency: Frequency = .annual,
         categoryIcon: String = "repeat.circle.fill",
         categoryColorHex: String = "90A4AE",
         startDate: Date = Date(),
@@ -36,22 +36,28 @@ final class FixedExpense {
         self.note = note
     }
 
-    var monthlyAmount: Double {
-        annualAmount / 12.0
+    /// M6: Uses frequency divisor instead of hardcoded /12
+    var monthlyAmount: Decimal {
+        annualAmount / 12
     }
 
-    var quarterlyAmount: Double {
-        annualAmount / 4.0
+    var periodAmount: Decimal {
+        annualAmount / frequency.divisor
+    }
+
+    var quarterlyAmount: Decimal {
+        annualAmount / 4
     }
 
     var formattedMonthly: String {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .currency
-        formatter.locale = Locale(identifier: "en_SG")
-        return formatter.string(from: NSNumber(value: monthlyAmount)) ?? "$0.00"
+        monthlyAmount.currencyString
     }
 
-    enum Frequency: String, CaseIterable {
+    var formattedPeriodAmount: String {
+        periodAmount.currencyString
+    }
+
+    enum Frequency: String, CaseIterable, Codable {
         case monthly = "monthly"
         case quarterly = "quarterly"
         case semiAnnual = "semi_annual"
@@ -66,7 +72,7 @@ final class FixedExpense {
             }
         }
 
-        var divisor: Double {
+        var divisor: Decimal {
             switch self {
             case .monthly: return 12
             case .quarterly: return 4

@@ -13,6 +13,7 @@ final class ExpenseCategory {
     var isSystem: Bool
 
     @Relationship(deleteRule: .nullify) var expenses: [Expense]?
+    @Relationship(inverse: \User.categories) var user: User?
 
     init(
         name: String,

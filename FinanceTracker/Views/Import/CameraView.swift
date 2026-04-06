@@ -11,11 +11,12 @@ struct CameraReceiptView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var capturedImage: UIImage?
     @State private var recognizedText = ""
-    @State private var recognizedAmount: Double?
+    @State private var recognizedAmount: Decimal?
     @State private var isProcessing = false
     @State private var showImagePicker = false
     @State private var showCamera = false
     @State private var receiptItems: [ReceiptItem] = []
+    @State private var saveError: String?
 
     var body: some View {
         NavigationStack {
@@ -162,6 +163,13 @@ struct CameraReceiptView: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
             }
 
+            if let error = saveError {
+                Text(error)
+                    .font(M3Typography.bodySmall)
+                    .foregroundColor(M3Color.Adaptive.error)
+            }
+
+            // I6: Actually save the expense
             if recognizedAmount != nil {
                 DSButton(
                     title: L("记录此笔支出"),
@@ -170,9 +178,32 @@ struct CameraReceiptView: View {
                     size: .large,
                     isFullWidth: true
                 ) {
-                    dismiss()
+                    saveRecognizedExpense()
                 }
             }
+        }
+    }
+
+    // I6: Save the OCR-recognized expense to SwiftData
+    private func saveRecognizedExpense() {
+        guard let amount = recognizedAmount, amount > 0 else { return }
+
+        let note = receiptItems.map(\.name).joined(separator: ", ")
+        let imageData = capturedImage?.jpegData(compressionQuality: 0.6)
+
+        let expense = Expense(
+            amount: amount,
+            note: note,
+            date: Date(),
+            receiptImageData: imageData,
+            sourceType: .camera
+        )
+        modelContext.insert(expense)
+        do {
+            try modelContext.save()
+            dismiss()
+        } catch {
+            saveError = L("保存失败") + "：\(error.localizedDescription)"
         }
     }
 
@@ -181,7 +212,7 @@ struct CameraReceiptView: View {
         Task {
             do {
                 let result = try await OCRService.shared.extractAmountFromReceipt(image)
-                var text = result.items.map { "\($0.name): $\($0.amount)" }.joined(separator: "\n")
+                var text = result.items.map { "\($0.name): \($0.amount.currencyString)" }.joined(separator: "\n")
                 if text.isEmpty {
                     text = (try? await OCRService.shared.recognizeText(from: image)) ?? L("无法识别文字")
                 }

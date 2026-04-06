@@ -9,7 +9,8 @@ struct SettingsView: View {
     @Query private var expenses: [Expense]
     @State private var showExportSheet = false
     @State private var showDeleteConfirm = false
-    @State private var exportContent = ""
+    @State private var exportURL: URL?
+    @State private var errorMessage: String?
 
     var body: some View {
         NavigationStack {
@@ -56,13 +57,13 @@ struct SettingsView: View {
 
                 Section(L("数据")) {
                     Button {
-                        exportData()
+                        exportData(format: .csv)
                     } label: {
                         DSSettingsRow(icon: "square.and.arrow.up.fill", title: L("导出数据 (CSV)"), color: "4DB6AC")
                     }
 
                     Button {
-                        exportJSON()
+                        exportData(format: .json)
                     } label: {
                         DSSettingsRow(icon: "doc.text.fill", title: L("导出数据 (JSON)"), color: "64B5F6")
                     }
@@ -103,6 +104,7 @@ struct SettingsView: View {
 
                     Button(role: .destructive) {
                         isLoggedIn = false
+                        UserDefaults.standard.removeObject(forKey: "currentUserId")
                     } label: {
                         DSSettingsRow(icon: "rectangle.portrait.and.arrow.right", title: L("退出登录"), color: "78909C")
                     }
@@ -119,21 +121,41 @@ struct SettingsView: View {
                 Text(L("此操作不可恢复，将删除所有记账数据。"))
             }
             .sheet(isPresented: $showExportSheet) {
-                ShareSheet(text: exportContent)
+                if let url = exportURL {
+                    ShareSheet(fileURL: url)
+                }
             }
         }
     }
 
-    private func exportData() {
-        exportContent = DataExportService.exportToCSV(expenses: expenses)
-        showExportSheet = true
-    }
+    private enum ExportFormat { case csv, json }
 
-    private func exportJSON() {
-        if let data = try? DataExportService.exportToJSON(expenses: expenses),
-           let text = String(data: data, encoding: .utf8) {
-            exportContent = text
+    // M5: Use correct file extension for each format
+    private func exportData(format: ExportFormat) {
+        let fileName: String
+        let content: String
+
+        switch format {
+        case .csv:
+            fileName = "finance_export.csv"
+            content = DataExportService.exportToCSV(expenses: expenses)
+        case .json:
+            fileName = "finance_export.json"
+            guard let data = try? DataExportService.exportToJSON(expenses: expenses),
+                  let text = String(data: data, encoding: .utf8) else {
+                errorMessage = L("导出失败")
+                return
+            }
+            content = text
+        }
+
+        let url = FileManager.default.temporaryDirectory.appendingPathComponent(fileName)
+        do {
+            try content.write(to: url, atomically: true, encoding: .utf8)
+            exportURL = url
             showExportSheet = true
+        } catch {
+            errorMessage = L("导出失败") + "：\(error.localizedDescription)"
         }
     }
 
@@ -141,7 +163,11 @@ struct SettingsView: View {
         for expense in expenses {
             modelContext.delete(expense)
         }
-        try? modelContext.save()
+        do {
+            try modelContext.save()
+        } catch {
+            errorMessage = L("删除失败") + "：\(error.localizedDescription)"
+        }
     }
 }
 
@@ -149,12 +175,10 @@ struct SettingsView: View {
 
 #if os(iOS)
 struct ShareSheet: UIViewControllerRepresentable {
-    let text: String
+    let fileURL: URL
 
     func makeUIViewController(context: Context) -> UIActivityViewController {
-        let tempURL = FileManager.default.temporaryDirectory.appendingPathComponent("finance_export.csv")
-        try? text.write(to: tempURL, atomically: true, encoding: .utf8)
-        return UIActivityViewController(activityItems: [tempURL], applicationActivities: nil)
+        UIActivityViewController(activityItems: [fileURL], applicationActivities: nil)
     }
 
     func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}

@@ -4,9 +4,10 @@ struct VoiceInputView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
     @State private var voiceService = VoiceRecognitionService()
-    @State private var parsedAmount: Double?
+    @State private var parsedAmount: Decimal?
     @State private var parsedNote: String?
     @State private var hasPermission = false
+    @State private var saveError: String?
 
     var body: some View {
         NavigationStack {
@@ -22,6 +23,12 @@ struct VoiceInputView: View {
                 // Parsed result
                 if let amount = parsedAmount {
                     parsedResultCard(amount: amount)
+                }
+
+                if let error = saveError {
+                    Text(error)
+                        .font(M3Typography.bodySmall)
+                        .foregroundColor(M3Color.Adaptive.error)
                 }
 
                 Spacer()
@@ -93,7 +100,7 @@ struct VoiceInputView: View {
         }
     }
 
-    private func parsedResultCard(amount: Double) -> some View {
+    private func parsedResultCard(amount: Decimal) -> some View {
         DSCard(variant: .outlined) {
             VStack(spacing: M3Spacing.md) {
                 HStack {
@@ -157,6 +164,7 @@ struct VoiceInputView: View {
                 voiceService.recognizedText = ""
                 parsedAmount = nil
                 parsedNote = nil
+                saveError = nil
             }
 
             DSButton(
@@ -165,7 +173,7 @@ struct VoiceInputView: View {
                 variant: .filled,
                 size: .medium
             ) {
-                dismiss()
+                saveVoiceExpense()
             }
         }
     }
@@ -181,4 +189,22 @@ struct VoiceInputView: View {
         }
     }
 
+    // I6: Actually save the voice-recognized expense
+    private func saveVoiceExpense() {
+        guard let amount = parsedAmount, amount > 0 else { return }
+
+        let expense = Expense(
+            amount: amount,
+            note: parsedNote ?? voiceService.recognizedText,
+            date: Date(),
+            sourceType: .voice
+        )
+        modelContext.insert(expense)
+        do {
+            try modelContext.save()
+            dismiss()
+        } catch {
+            saveError = L("保存失败") + "：\(error.localizedDescription)"
+        }
+    }
 }

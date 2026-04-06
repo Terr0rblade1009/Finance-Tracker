@@ -7,8 +7,8 @@ final class Account {
     var name: String
     var icon: String
     var colorHex: String
-    var balance: Double
-    var accountType: String
+    var balance: Decimal
+    var accountType: AccountType
     var sortOrder: Int
     var isArchived: Bool
 
@@ -19,8 +19,8 @@ final class Account {
         name: String,
         icon: String,
         colorHex: String,
-        balance: Double = 0,
-        accountType: String = "cash",
+        balance: Decimal = 0,
+        accountType: AccountType = .cash,
         sortOrder: Int = 0
     ) {
         self.id = UUID()
@@ -33,7 +33,7 @@ final class Account {
         self.isArchived = false
     }
 
-    enum AccountType: String, CaseIterable {
+    enum AccountType: String, CaseIterable, Codable {
         case cash = "cash"
         case bankCard = "bank_card"
         case creditCard = "credit_card"
@@ -80,18 +80,15 @@ final class Account {
     }
 
     var localizedName: String {
-        if let type = AccountType(rawValue: accountType) {
-            return type.displayName
-        }
-        return name
+        accountType.displayName
     }
 
     static func defaultAccounts() -> [Account] {
         [
-            Account(name: "现金", icon: "banknote.fill", colorHex: "66BB6A", accountType: "cash", sortOrder: 0),
-            Account(name: "银行卡", icon: "creditcard.fill", colorHex: "42A5F5", accountType: "bank_card", sortOrder: 1),
-            Account(name: "支付宝", icon: "a.circle.fill", colorHex: "1677FF", accountType: "alipay", sortOrder: 2),
-            Account(name: "微信支付", icon: "message.fill", colorHex: "07C160", accountType: "wechat_pay", sortOrder: 3),
+            Account(name: "现金", icon: "banknote.fill", colorHex: "66BB6A", accountType: .cash, sortOrder: 0),
+            Account(name: "银行卡", icon: "creditcard.fill", colorHex: "42A5F5", accountType: .bankCard, sortOrder: 1),
+            Account(name: "支付宝", icon: "a.circle.fill", colorHex: "1677FF", accountType: .alipay, sortOrder: 2),
+            Account(name: "微信支付", icon: "message.fill", colorHex: "07C160", accountType: .wechatPay, sortOrder: 3),
         ]
     }
 }

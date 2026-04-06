@@ -4,11 +4,22 @@ import Charts
 
 struct HomeView: View {
     @Environment(\.modelContext) private var modelContext
+    // I1: Limit query to recent data instead of loading all history
     @Query(sort: \Expense.date, order: .reverse) private var allExpenses: [Expense]
     @State private var showCalendar = false
     @State private var selectedMonth = Date()
     @State private var showSearch = false
     @State private var searchText = ""
+
+    init() {
+        // Load expenses from 2 years ago to cover reasonable navigation range
+        let twoYearsAgo = Calendar.current.date(byAdding: .year, value: -2, to: Date()) ?? Date()
+        _allExpenses = Query(
+            filter: #Predicate<Expense> { $0.date >= twoYearsAgo },
+            sort: \Expense.date,
+            order: .reverse
+        )
+    }
 
     private var calendar: Calendar { Calendar.current }
 
@@ -24,40 +35,22 @@ struct HomeView: View {
         allExpenses.filter { $0.date >= monthStart && $0.date < monthEnd }
     }
 
-    private var monthlySpending: Double {
-        monthExpenses.filter { !$0.isIncome }.reduce(0) { $0 + $1.amount }
-    }
-
-    private var monthlyIncome: Double {
-        monthExpenses.filter { $0.isIncome }.reduce(0) { $0 + $1.amount }
-    }
-
-    private var monthBalance: Double {
-        monthlyIncome - monthlySpending
-    }
+    // M4: Uses shared extension instead of inline aggregation
+    private var monthlySpending: Decimal { monthExpenses.total(isIncome: false) }
+    private var monthlyIncome: Decimal { monthExpenses.total(isIncome: true) }
+    private var monthBalance: Decimal { monthlyIncome - monthlySpending }
 
     private var categoryBreakdown: [DSPieChartItem] {
-        let expenses = monthExpenses.filter { !$0.isIncome }
-        var grouping: [String: (icon: String, colorHex: String, amount: Double)] = [:]
-
-        for expense in expenses {
-            let name = expense.category?.localizedName ?? L("未分类")
-            let icon = expense.category?.icon ?? "ellipsis.circle.fill"
-            let colorHex = expense.category?.colorHex ?? "BDBDBD"
-            let existing = grouping[name] ?? (icon: icon, colorHex: colorHex, amount: 0)
-            grouping[name] = (icon: icon, colorHex: colorHex, amount: existing.amount + expense.amount)
-        }
-
-        let total = max(monthlySpending, 1)
-        return grouping.map { (name, data) in
+        let breakdown = monthExpenses.categoryBreakdown(isIncome: false)
+        let total = monthlySpending > 0 ? monthlySpending : Decimal(1)
+        return breakdown.map { item in
             DSPieChartItem(
-                name: name,
-                amount: data.amount,
-                colorHex: data.colorHex,
-                percentage: (data.amount / total) * 100
+                name: item.name,
+                amount: item.amount.doubleValue,
+                colorHex: item.colorHex,
+                percentage: NSDecimalNumber(decimal: (item.amount / total) * 100).doubleValue
             )
         }
-        .sorted { $0.amount > $1.amount }
     }
 
     private var filteredExpenses: [Expense] {

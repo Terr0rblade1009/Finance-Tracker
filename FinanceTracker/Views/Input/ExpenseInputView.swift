@@ -12,6 +12,7 @@ struct ExpenseInputView: View {
     @State private var selectedTab = 0
     @State private var showDatePicker = false
     @State private var showSuccess = false
+    @State private var errorMessage: String?
 
     private var categories: [ExpenseCategory] {
         selectedTab == 0 ? expenseCategories : incomeCategories
@@ -32,6 +33,12 @@ struct ExpenseInputView: View {
                         accountSelector
                         noteField
                         dateSelector
+
+                        if let errorMessage {
+                            Text(errorMessage)
+                                .font(M3Typography.bodySmall)
+                                .foregroundColor(M3Color.Adaptive.error)
+                        }
                     }
                     .padding(.horizontal, M3Spacing.base)
                     .padding(.bottom, 300)
@@ -177,9 +184,10 @@ struct ExpenseInputView: View {
     private func saveExpense() {
         do {
             try viewModel.saveExpense(modelContext: modelContext)
+            errorMessage = nil
             withAnimation(.spring) { showSuccess = true }
         } catch {
-            // Handle error
+            errorMessage = L("保存失败") + "：\(error.localizedDescription)"
         }
     }
 }

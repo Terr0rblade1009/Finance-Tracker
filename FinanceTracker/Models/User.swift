@@ -7,6 +7,7 @@ final class User {
     @Attribute(.unique) var email: String
     var displayName: String
     var passwordHash: String
+    var passwordSalt: String
     var avatarEmoji: String
     var currency: String
     var createdAt: Date
@@ -15,11 +16,13 @@ final class User {
     @Relationship(deleteRule: .cascade) var expenses: [Expense]?
     @Relationship(deleteRule: .cascade) var accounts: [Account]?
     @Relationship(deleteRule: .cascade) var budgets: [Budget]?
+    @Relationship(deleteRule: .cascade) var categories: [ExpenseCategory]?
 
     init(
         email: String,
         displayName: String,
         passwordHash: String,
+        passwordSalt: String = "",
         avatarEmoji: String = "😊",
         currency: String = "SGD"
     ) {
@@ -27,6 +30,7 @@ final class User {
         self.email = email
         self.displayName = displayName
         self.passwordHash = passwordHash
+        self.passwordSalt = passwordSalt
         self.avatarEmoji = avatarEmoji
         self.currency = currency
         self.createdAt = Date()

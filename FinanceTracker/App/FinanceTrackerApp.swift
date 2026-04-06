@@ -6,6 +6,7 @@ struct FinanceTrackerApp: App {
     @AppStorage("isLoggedIn") private var isLoggedIn = false
     @AppStorage("colorSchemePreference") private var colorSchemePreference = "system"
     @AppStorage("appLanguage") private var appLanguage = "zh-Hans"
+    @State private var authViewModel = AuthViewModel()
 
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
@@ -30,14 +31,23 @@ struct FinanceTrackerApp: App {
     var body: some Scene {
         WindowGroup {
             Group {
-                if isLoggedIn {
+                if isLoggedIn && authViewModel.currentUser != nil {
                     MainTabView()
+                        .environment(authViewModel)
                 } else {
                     LoginView()
+                        .environment(authViewModel)
                 }
             }
             .environment(\.locale, Locale(identifier: appLanguage))
             .preferredColorScheme(preferredScheme)
+            .task {
+                // C4: Restore user session on app launch
+                if isLoggedIn {
+                    let context = sharedModelContainer.mainContext
+                    authViewModel.restoreSession(modelContext: context)
+                }
+            }
         }
         .modelContainer(sharedModelContainer)
     }

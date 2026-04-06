@@ -115,7 +115,7 @@ class VoiceRecognitionService {
         audioLevel = 0
     }
 
-    func parseExpenseFromVoice() -> (amount: Double?, note: String?) {
+    func parseExpenseFromVoice() -> (amount: Decimal?, note: String?) {
         let text = recognizedText
         let isChinese = speechRecognizer?.locale.language.languageCode?.identifier == "zh"
 
@@ -130,12 +130,12 @@ class VoiceRecognitionService {
                 #"(\d+\.?\d{0,2})"#,
             ]
 
-        var amount: Double?
+        var amount: Decimal?
         for pattern in amountPatterns {
             if let regex = try? NSRegularExpression(pattern: pattern, options: .caseInsensitive),
                let match = regex.firstMatch(in: text, range: NSRange(text.startIndex..., in: text)),
                let range = Range(match.range(at: 1), in: text) {
-                amount = Double(String(text[range]))
+                amount = Decimal(string: String(text[range]))
                 if amount != nil { break }
             }
         }

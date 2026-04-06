@@ -6,15 +6,16 @@ import SwiftData
 class ImportViewModel {
     var isProcessing = false
     var recognizedText = ""
-    var recognizedAmount: Double?
+    var recognizedAmount: Decimal?
     var errorMessage: String?
     var importedExpenses: [ParsedExpense] = []
 
     struct ParsedExpense: Identifiable {
         let id = UUID()
-        var amount: Double
+        var amount: Decimal
         var note: String
         var date: Date
+        var isIncome: Bool = false
         var isSelected: Bool = true
     }
 
@@ -45,7 +46,7 @@ class ImportViewModel {
             let trimmed = line.trimmingCharacters(in: .whitespaces)
             if let amount = extractAmount(from: trimmed) {
                 parsed.append(ParsedExpense(
-                    amount: abs(amount),
+                    amount: amount < 0 ? -amount : amount,
                     note: extractNote(from: trimmed),
                     date: Date()
                 ))
@@ -67,9 +68,10 @@ class ImportViewModel {
                 amount: item.amount,
                 note: item.note,
                 date: item.date,
+                isIncome: item.isIncome,
                 category: category,
                 account: account,
-                sourceType: sourceType.rawValue
+                sourceType: sourceType
             )
             modelContext.insert(expense)
         }
@@ -77,7 +79,7 @@ class ImportViewModel {
         importedExpenses = []
     }
 
-    private func extractAmount(from text: String) -> Double? {
+    private func extractAmount(from text: String) -> Decimal? {
         let pattern = #"[¥￥$]?\s*(\d+[.,]?\d{0,2})"#
         guard let regex = try? NSRegularExpression(pattern: pattern),
               let match = regex.firstMatch(in: text, range: NSRange(text.startIndex..., in: text)),
@@ -85,7 +87,7 @@ class ImportViewModel {
             return nil
         }
         let numberStr = String(text[range]).replacingOccurrences(of: ",", with: "")
-        return Double(numberStr)
+        return Decimal(string: numberStr)
     }
 
     private func extractNote(from text: String) -> String {
