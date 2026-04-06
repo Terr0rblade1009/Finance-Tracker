@@ -1,0 +1,10 @@
+{
+  "codeConnect": {
+    "parser": "swift",
+    "include": ["CodeConnect/**/*.figma.swift"],
+    "swiftPackagePath": "Package.swift",
+    "importMapping": {
+      "FinanceTracker/DesignSystem/*": "FinanceTracker"
+    }
+  }
+}

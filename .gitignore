@@ -1,0 +1,29 @@
+# Environment secrets
+.env
+
+# macOS
+.DS_Store
+*.swp
+*~
+
+# Xcode
+*.xcodeproj/xcuserdata/
+*.xcodeproj/project.xcworkspace/xcuserdata/
+DerivedData/
+*.hmap
+*.ipa
+*.dSYM.zip
+*.dSYM
+*.xcuserstate
+
+# Swift Package Manager
+.build/
+.swiftpm/
+Package.resolved
+
+# CocoaPods
+Pods/
+
+# Miscellaneous
+*.log
+xcuserdata/
