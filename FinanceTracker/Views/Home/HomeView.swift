@@ -85,7 +85,7 @@ struct HomeView: View {
                         } label: {
                             HStack(spacing: M3Spacing.xs) {
                                 Image(systemName: "calendar")
-                                    .font(.system(size: 14))
+                                    .font(M3Typography.bodyMedium)
                                 Text(L("收支日历"))
                                     .font(M3Typography.labelMedium)
                             }
@@ -101,13 +101,13 @@ struct HomeView: View {
                         DSSummaryCard(
                             title: L("总支出"),
                             amount: monthlySpending.currencyString,
-                            titleDotColor: M3Color.Light.error,
+                            titleDotColor: M3Color.Adaptive.error,
                             secondaryItems: [
                                 DSStatItem(label: L("总收入"), value: monthlyIncome.currencyString),
                                 DSStatItem(
                                     label: L("月结余"),
                                     value: monthBalance.currencyString,
-                                    color: monthBalance >= 0 ? M3Color.Light.primary : M3Color.Light.error
+                                    color: monthBalance >= 0 ? M3Color.Adaptive.primary : M3Color.Adaptive.error
                                 )
                             ]
                         )
@@ -135,9 +135,9 @@ struct HomeView: View {
                             }
                         } label: {
                             Image(systemName: showSearch ? "xmark" : "magnifyingglass")
-                                .font(.system(size: 16, weight: .medium))
+                                .font(M3Typography.titleMedium)
                                 .foregroundColor(M3Color.Adaptive.onSurfaceVariant)
-                                .frame(width: 36, height: 36)
+                                .frame(width: M3IconSize.large, height: M3IconSize.large)
                                 .background(M3Color.Adaptive.surfaceContainerHigh)
                                 .clipShape(Circle())
                         }
@@ -146,9 +146,9 @@ struct HomeView: View {
                             ExpenseCalendarView(selectedMonth: $selectedMonth, allExpenses: allExpenses)
                         } label: {
                             Image(systemName: "calendar")
-                                .font(.system(size: 16, weight: .medium))
+                                .font(M3Typography.titleMedium)
                                 .foregroundColor(M3Color.Adaptive.onSurfaceVariant)
-                                .frame(width: 36, height: 36)
+                                .frame(width: M3IconSize.large, height: M3IconSize.large)
                                 .background(M3Color.Adaptive.surfaceContainerHigh)
                                 .clipShape(Circle())
                         }
@@ -193,7 +193,7 @@ struct ExpenseRow: View {
             subtitle: expense.note.isEmpty ? nil : expense.note,
             trailingTop: "\(expense.isIncome ? "+" : "-")\(expense.formattedAmount)",
             trailingBottom: expense.formattedDate,
-            trailingTopColor: expense.isIncome ? M3Color.Light.primary : M3Color.Adaptive.onSurface
+            trailingTopColor: expense.isIncome ? M3Color.Adaptive.primary : M3Color.Adaptive.onSurface
         )
     }
 }

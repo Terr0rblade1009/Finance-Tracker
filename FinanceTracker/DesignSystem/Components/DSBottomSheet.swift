@@ -7,7 +7,7 @@ struct DSBottomSheet<Content: View>: View {
     var body: some View {
         ZStack(alignment: .bottom) {
             if isPresented {
-                Color.black.opacity(0.32)
+                M3Color.scrim
                     .ignoresSafeArea()
                     .onTapGesture { withAnimation(.spring(response: 0.35)) { isPresented = false } }
                     .transition(.opacity)

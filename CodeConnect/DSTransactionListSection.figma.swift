@@ -2,7 +2,7 @@ import SwiftUI
 import Figma
 
 struct DSTransactionListSection_connection: FigmaConnect {
-    let component = DSTransactionListSection.self
+    let component = DSTransactionListSection<AnyView>.self
     let figmaNodeUrl = "https://www.figma.com/design/bRtV6gACFbALKiKHXtNsBD/FinanceTracker?node-id=229-3"
 
     var body: some View {

@@ -11,7 +11,7 @@ struct DSAmountDisplay: View {
                 .font(M3Typography.labelMedium)
                 .foregroundColor(M3Color.Adaptive.onSurfaceVariant)
 
-            HStack(alignment: .firstTextBaseline, spacing: 4) {
+            HStack(alignment: .firstTextBaseline, spacing: M3Spacing.xs) {
                 Text(currencySymbol)
                     .font(M3Typography.headlineMedium)
                     .foregroundColor(M3Color.Adaptive.onSurfaceVariant)
@@ -23,6 +23,6 @@ struct DSAmountDisplay: View {
             }
         }
         .frame(maxWidth: .infinity)
-        .padding(.vertical, M3Spacing.lg)
+        .padding(.vertical, M3Spacing.sm)
     }
 }

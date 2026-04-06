@@ -8,7 +8,7 @@ struct DSSearchBar: View {
     var body: some View {
         HStack(spacing: M3Spacing.md) {
             Image(systemName: "magnifyingglass")
-                .font(.system(size: 20))
+                .font(.system(size: M3IconSize.medium))
                 .foregroundColor(M3Color.Adaptive.onSurfaceVariant)
 
             TextField(placeholder, text: $text)
@@ -21,7 +21,7 @@ struct DSSearchBar: View {
                     text = ""
                 } label: {
                     Image(systemName: "xmark.circle.fill")
-                        .font(.system(size: 18))
+                        .font(.system(size: M3IconSize.small))
                         .foregroundColor(M3Color.Adaptive.onSurfaceVariant)
                 }
             }

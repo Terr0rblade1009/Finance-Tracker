@@ -138,7 +138,7 @@ struct DSIcon {
         Token(id: "password",       sfSymbol: "lock.fill",           defaultColorHex: nil),
         Token(id: "confirmPass",    sfSymbol: "lock.rotation",       defaultColorHex: nil),
         Token(id: "register",       sfSymbol: "person.badge.plus",   defaultColorHex: nil),
-        Token(id: "appLogo",        sfSymbol: "dollarsign.circle.fill", defaultColorHex: nil),
+        Token(id: "appLogo",        sfSymbol: "yensign.circle.fill",    defaultColorHex: nil),
     ]
 
     // MARK: - Extra Picker Icons (for category creation)

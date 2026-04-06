@@ -15,11 +15,11 @@ struct DSImportCard: View {
                         .fill(color.opacity(0.12))
                         .frame(width: 56, height: 56)
                     Image(systemName: icon)
-                        .font(.system(size: 24))
+                        .font(.system(size: M3IconSize.medium))
                         .foregroundColor(color)
                 }
 
-                VStack(spacing: 2) {
+                VStack(spacing: M3Spacing.xxs) {
                     Text(title)
                         .font(M3Typography.labelLarge)
                         .foregroundColor(M3Color.Adaptive.onSurface)

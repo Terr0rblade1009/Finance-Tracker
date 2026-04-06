@@ -74,7 +74,7 @@ struct ExpenseCalendarView: View {
                         dismiss()
                     } label: {
                         Image(systemName: "chevron.left")
-                            .font(.system(size: 16, weight: .semibold))
+                            .font(M3Typography.titleMedium)
                             .foregroundColor(M3Color.Adaptive.onSurface)
                     }
                 }
@@ -114,9 +114,9 @@ struct ExpenseCalendarView: View {
     // MARK: - Calendar Grid
 
     private var calendarGrid: some View {
-        VStack(spacing: 2) {
+        VStack(spacing: M3Spacing.xxs) {
             ForEach(0..<rows, id: \.self) { row in
-                HStack(spacing: 2) {
+                HStack(spacing: M3Spacing.xxs) {
                     ForEach(0..<7, id: \.self) { col in
                         let cellIndex = row * 7 + col
                         let dayNumber = cellIndex - firstWeekday + 1
@@ -138,7 +138,7 @@ struct ExpenseCalendarView: View {
         let isToday = cal.isDateInToday(dateForDay(day))
         let spending = dailySpending[day]
 
-        return VStack(spacing: 2) {
+        return VStack(spacing: M3Spacing.xxs) {
             Text("\(day)")
                 .font(M3Typography.titleSmall)
                 .foregroundColor(isToday ? M3Color.Adaptive.onPrimary : M3Color.Adaptive.onSurface)
@@ -149,7 +149,7 @@ struct ExpenseCalendarView: View {
             if let amount = spending {
                 Text(shortAmount(amount))
                     .font(.system(size: 9))
-                    .foregroundColor(M3Color.Light.error)
+                    .foregroundColor(M3Color.Adaptive.error)
                     .lineLimit(1)
                     .minimumScaleFactor(0.6)
             } else {
@@ -175,8 +175,8 @@ struct ExpenseCalendarView: View {
         return VStack(spacing: M3Spacing.md) {
             Divider()
             DSStatRow(items: [
-                DSStatItem(label: L("总支出"), value: totalSpending.currencyString, color: M3Color.Light.error),
-                DSStatItem(label: L("总收入"), value: totalIncome.currencyString, color: M3Color.Light.primary),
+                DSStatItem(label: L("总支出"), value: totalSpending.currencyString, color: M3Color.Adaptive.error),
+                DSStatItem(label: L("总收入"), value: totalIncome.currencyString, color: M3Color.Adaptive.primary),
                 DSStatItem(label: L("记账天数"), value: "\(activeDays)")
             ])
             .padding(.horizontal, M3Spacing.xl)

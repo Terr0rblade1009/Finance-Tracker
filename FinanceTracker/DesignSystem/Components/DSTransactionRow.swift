@@ -16,11 +16,11 @@ struct DSTransactionRow: View {
                     .fill(iconColor.opacity(0.15))
                     .frame(width: 44, height: 44)
                 Image(systemName: icon)
-                    .font(.system(size: 18))
+                    .font(.system(size: M3IconSize.small))
                     .foregroundColor(iconColor)
             }
 
-            VStack(alignment: .leading, spacing: 2) {
+            VStack(alignment: .leading, spacing: M3Spacing.xxs) {
                 Text(title)
                     .font(M3Typography.titleSmall)
                     .foregroundColor(M3Color.Adaptive.onSurface)
@@ -34,7 +34,7 @@ struct DSTransactionRow: View {
 
             Spacer()
 
-            VStack(alignment: .trailing, spacing: 2) {
+            VStack(alignment: .trailing, spacing: M3Spacing.xxs) {
                 Text(trailingTop)
                     .font(M3Typography.titleSmall)
                     .foregroundColor(trailingTopColor)

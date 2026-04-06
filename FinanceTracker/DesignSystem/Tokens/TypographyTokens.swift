@@ -31,8 +31,9 @@ struct M3Typography {
     static let labelSmall = Font.system(size: 11, weight: .medium, design: .rounded)
 
     // MARK: - Numeric (for amounts)
+    static let amountDisplay = Font.system(size: 40, weight: .bold, design: .rounded)
     static let amountLarge = Font.system(size: 48, weight: .bold, design: .monospaced)
-    static let amountMedium = Font.system(size: 32, weight: .semibold, design: .monospaced)
+    static let amountMedium = Font.system(size: 32, weight: .bold, design: .monospaced)
     static let amountSmall = Font.system(size: 20, weight: .medium, design: .monospaced)
 }
 
@@ -53,6 +54,10 @@ struct M3LineHeight {
     static let labelLarge: CGFloat = 20
     static let labelMedium: CGFloat = 16
     static let labelSmall: CGFloat = 16
+    static let amountDisplay: CGFloat = 48
+    static let amountLarge: CGFloat = 56
+    static let amountMedium: CGFloat = 40
+    static let amountSmall: CGFloat = 28
 }
 
 // MARK: - Letter Spacing (Figma-compatible)
@@ -72,4 +77,8 @@ struct M3LetterSpacing {
     static let labelLarge: CGFloat = 0.1
     static let labelMedium: CGFloat = 0.5
     static let labelSmall: CGFloat = 0.5
+    static let amountDisplay: CGFloat = 0
+    static let amountLarge: CGFloat = 0
+    static let amountMedium: CGFloat = 0
+    static let amountSmall: CGFloat = 0
 }

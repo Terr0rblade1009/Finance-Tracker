@@ -26,7 +26,7 @@ struct ExpenseInputView: View {
                     }
 
                 ScrollView {
-                    VStack(spacing: M3Spacing.lg) {
+                    VStack(spacing: M3Spacing.base) {
                         amountDisplay
                         categoryGrid
                         accountSelector
@@ -134,7 +134,7 @@ struct ExpenseInputView: View {
                     .foregroundColor(M3Color.Adaptive.onSurface)
                 Spacer()
                 Image(systemName: "chevron.right")
-                    .font(.system(size: 12))
+                    .font(M3Typography.labelSmall)
                     .foregroundColor(M3Color.Adaptive.outline)
             }
             .padding(M3Spacing.md)
@@ -153,16 +153,16 @@ struct ExpenseInputView: View {
 
     private var successOverlay: some View {
         ZStack {
-            Color.black.opacity(0.3)
+            M3Color.scrim
                 .ignoresSafeArea()
 
             VStack(spacing: M3Spacing.base) {
                 Image(systemName: "checkmark.circle.fill")
-                    .font(.system(size: 56))
+                    .font(.system(size: M3IconSize.extraLarge))
                     .foregroundColor(M3Color.Adaptive.primary)
                 Text(L("记录成功"))
                     .font(M3Typography.titleMedium)
-                    .foregroundColor(.white)
+                    .foregroundColor(M3Color.Adaptive.inverseOnSurface)
             }
             .transition(.scale.combined(with: .opacity))
         }

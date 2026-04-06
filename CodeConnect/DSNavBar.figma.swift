@@ -16,12 +16,9 @@ struct DSNavBar_connection: FigmaConnect {
     )
     var style: NavBarStyle = .titleOnly
 
-    @FigmaString("Title")
-    var title: String = "记账本"
-
     var body: some View {
         DSNavBar(
-            title: self.title,
+            title: "记账本",
             backAction: self.style.hasBack ? { } : nil,
             trailingIcon: self.style.hasTrailing ? "plus.circle.fill" : nil,
             trailingAction: self.style.hasTrailing ? { } : nil
@@ -29,7 +26,7 @@ struct DSNavBar_connection: FigmaConnect {
     }
 }
 
-private enum NavBarStyle {
+enum NavBarStyle {
     case titleOnly, backTitle, backTitleTrailing, titleTrailing
 
     var hasBack: Bool {

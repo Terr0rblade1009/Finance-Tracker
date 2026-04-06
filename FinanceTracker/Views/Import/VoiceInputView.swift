@@ -50,9 +50,9 @@ struct VoiceInputView: View {
     }
 
     private var waveformView: some View {
-        HStack(spacing: 3) {
+        HStack(spacing: M3Spacing.xxs) {
             ForEach(0..<20, id: \.self) { i in
-                RoundedRectangle(cornerRadius: 2)
+                RoundedRectangle(cornerRadius: M3Spacing.xxs)
                     .fill(M3Color.Adaptive.primary.opacity(voiceService.isRecording ? 0.8 : 0.2))
                     .frame(width: 4, height: barHeight(for: i))
                     .animation(
@@ -137,8 +137,8 @@ struct VoiceInputView: View {
                         .frame(width: 24, height: 24)
                 } else {
                     Image(systemName: "mic.fill")
-                        .font(.system(size: 28))
-                        .foregroundColor(.white)
+                        .font(.system(size: M3IconSize.medium))
+                        .foregroundColor(M3Color.Adaptive.onPrimary)
                 }
             }
         }

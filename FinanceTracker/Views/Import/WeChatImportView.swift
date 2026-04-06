@@ -35,7 +35,7 @@ struct WeChatImportView: View {
             VStack(alignment: .leading, spacing: M3Spacing.md) {
                 HStack(spacing: M3Spacing.md) {
                     Image(systemName: "message.fill")
-                        .font(.system(size: 24))
+                        .font(.system(size: M3IconSize.medium))
                         .foregroundColor(Color(hex: "07C160"))
                     Text(L("从微信导入"))
                         .font(M3Typography.titleMedium)

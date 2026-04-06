@@ -18,8 +18,8 @@ struct LoginView: View {
                             Circle()
                                 .fill(M3Color.Adaptive.primaryContainer)
                                 .frame(width: 88, height: 88)
-                            Image(systemName: "dollarsign.circle.fill")
-                                .font(.system(size: 44))
+                            Image(systemName: "yensign.circle.fill")
+                                .font(.system(size: M3IconSize.extraLarge))
                                 .foregroundColor(M3Color.Adaptive.onPrimaryContainer)
                         }
 

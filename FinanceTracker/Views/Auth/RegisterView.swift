@@ -21,7 +21,7 @@ struct RegisterView: View {
                             .fill(M3Color.Adaptive.primaryContainer)
                             .frame(width: 80, height: 80)
                         Text(selectedAvatar)
-                            .font(.system(size: 40))
+                            .font(M3Typography.displaySmall)
                     }
 
                     ScrollView(.horizontal, showsIndicators: false) {
@@ -31,7 +31,7 @@ struct RegisterView: View {
                                     selectedAvatar = emoji
                                 } label: {
                                     Text(emoji)
-                                        .font(.system(size: 28))
+                                        .font(M3Typography.headlineMedium)
                                         .frame(width: 48, height: 48)
                                         .background(
                                             selectedAvatar == emoji

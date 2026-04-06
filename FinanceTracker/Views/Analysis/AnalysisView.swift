@@ -102,13 +102,13 @@ struct AnalysisView: View {
                     title: L("总支出"),
                     amount: viewModel.formattedTotalExpense,
                     icon: "arrow.up.circle.fill",
-                    color: M3Color.Light.error
+                    color: M3Color.Adaptive.error
                 )
                 SummaryCard(
                     title: L("总收入"),
                     amount: viewModel.formattedTotalIncome,
                     icon: "arrow.down.circle.fill",
-                    color: M3Color.Light.primary
+                    color: M3Color.Adaptive.primary
                 )
             }
 
@@ -116,7 +116,7 @@ struct AnalysisView: View {
                 title: L("净收支"),
                 amount: viewModel.formattedNet,
                 icon: viewModel.netAmount >= 0 ? "chart.line.uptrend.xyaxis" : "chart.line.downtrend.xyaxis",
-                color: viewModel.netAmount >= 0 ? M3Color.Light.primary : M3Color.Light.error
+                color: viewModel.netAmount >= 0 ? M3Color.Adaptive.primary : M3Color.Adaptive.error
             )
         }
     }
@@ -155,16 +155,16 @@ struct AnalysisView: View {
                                     x: .value(L("日期"), day.date, unit: .day),
                                     y: .value(L("支出"), day.expense)
                                 )
-                                .foregroundStyle(M3Color.Light.error.opacity(0.7))
-                                .cornerRadius(4)
+                                .foregroundStyle(M3Color.Adaptive.error.opacity(0.7))
+                                .cornerRadius(M3Radius.extraSmall)
 
                                 if day.income > 0 {
                                     BarMark(
                                         x: .value(L("日期"), day.date, unit: .day),
                                         y: .value(L("收入"), day.income)
                                     )
-                                    .foregroundStyle(M3Color.Light.primary.opacity(0.7))
-                                    .cornerRadius(4)
+                                    .foregroundStyle(M3Color.Adaptive.primary.opacity(0.7))
+                                    .cornerRadius(M3Radius.extraSmall)
                                 }
                             }
                         }
@@ -212,7 +212,7 @@ struct SummaryCard: View {
             VStack(alignment: .leading, spacing: M3Spacing.sm) {
                 HStack(spacing: M3Spacing.sm) {
                     Image(systemName: icon)
-                        .font(.system(size: 16))
+                        .font(.system(size: M3IconSize.medium))
                         .foregroundColor(color)
                     Text(title)
                         .font(M3Typography.labelMedium)

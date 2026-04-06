@@ -22,7 +22,7 @@ struct DSCategoryCell: View {
                         )
 
                     Image(systemName: icon)
-                        .font(.system(size: 20))
+                        .font(.system(size: M3IconSize.medium))
                         .foregroundColor(color)
                 }
 

@@ -16,11 +16,11 @@ struct DSCategoryProgressRow: View {
                         .fill(color.opacity(0.15))
                         .frame(width: 40, height: 40)
                     Image(systemName: icon)
-                        .font(.system(size: 16))
+                        .font(.system(size: M3IconSize.medium))
                         .foregroundColor(color)
                 }
 
-                VStack(alignment: .leading, spacing: 2) {
+                VStack(alignment: .leading, spacing: M3Spacing.xxs) {
                     Text(name)
                         .font(M3Typography.titleSmall)
                         .foregroundColor(M3Color.Adaptive.onSurface)
@@ -31,7 +31,7 @@ struct DSCategoryProgressRow: View {
 
                 Spacer()
 
-                VStack(alignment: .trailing, spacing: 2) {
+                VStack(alignment: .trailing, spacing: M3Spacing.xxs) {
                     Text(amount)
                         .font(M3Typography.titleSmall)
                         .foregroundColor(M3Color.Adaptive.onSurface)

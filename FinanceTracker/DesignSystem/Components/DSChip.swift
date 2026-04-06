@@ -19,7 +19,7 @@ struct DSChip: View {
             HStack(spacing: M3Spacing.sm) {
                 if let icon {
                     Image(systemName: icon)
-                        .font(.system(size: 16))
+                        .font(.system(size: M3IconSize.medium))
                 }
                 Text(label)
                     .font(M3Typography.labelLarge)

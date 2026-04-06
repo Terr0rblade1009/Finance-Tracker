@@ -8,12 +8,9 @@ struct DSSectionHeader_connection: FigmaConnect {
     @FigmaBoolean("hasTrailing")
     var hasTrailing: Bool = false
 
-    @FigmaString("Title")
-    var title: String = "分类"
-
     var body: some View {
         DSSectionHeader(
-            title: self.title,
+            title: "分类",
             trailing: self.hasTrailing ? "查看全部" : nil,
             trailingAction: self.hasTrailing ? { } : nil
         )

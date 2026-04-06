@@ -66,7 +66,7 @@ struct CameraReceiptView: View {
                 } label: {
                     VStack(spacing: M3Spacing.md) {
                         Image(systemName: "camera.fill")
-                            .font(.system(size: 32))
+                            .font(.system(size: M3IconSize.large))
                             .foregroundColor(M3Color.Adaptive.primary)
                         Text(L("拍摄收据"))
                             .font(M3Typography.labelLarge)
@@ -83,7 +83,7 @@ struct CameraReceiptView: View {
                 } label: {
                     VStack(spacing: M3Spacing.md) {
                         Image(systemName: "photo.on.rectangle")
-                            .font(.system(size: 32))
+                            .font(.system(size: M3IconSize.large))
                             .foregroundColor(M3Color.Adaptive.tertiary)
                         Text(L("选择图片"))
                             .font(M3Typography.labelLarge)

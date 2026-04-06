@@ -31,11 +31,11 @@ struct DSTextField: View {
                 HStack(spacing: M3Spacing.md) {
                     if let icon {
                         Image(systemName: icon)
-                            .font(.system(size: 20))
+                            .font(.system(size: M3IconSize.medium))
                             .foregroundColor(M3Color.Adaptive.onSurfaceVariant)
                     }
 
-                    VStack(alignment: .leading, spacing: 2) {
+                    VStack(alignment: .leading, spacing: M3Spacing.xxs) {
                         if !text.isEmpty || isFocused {
                             Text(label)
                                 .font(M3Typography.bodySmall)

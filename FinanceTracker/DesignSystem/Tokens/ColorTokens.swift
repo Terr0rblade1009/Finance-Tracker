@@ -217,10 +217,15 @@ struct CategoryColors {
     static let transport = Color(hex: "4FC3F7")
     static let shopping = Color(hex: "BA68C8")
     static let entertainment = Color(hex: "FFD54F")
-    static let health = Color(hex: "81C784")
+    static let healthcare = Color(hex: "81C784")
     static let education = Color(hex: "7986CB")
     static let housing = Color(hex: "A1887F")
     static let utilities = Color(hex: "4DB6AC")
+    static let telecom = Color(hex: "9575CD")
+    static let clothing = Color(hex: "F06292")
+    static let beauty = Color(hex: "FFB74D")
+    static let social = Color(hex: "64B5F6")
+    static let pets = Color(hex: "AED581")
     static let insurance = Color(hex: "90A4AE")
     static let salary = Color(hex: "66BB6A")
     static let investment = Color(hex: "42A5F5")
@@ -228,7 +233,8 @@ struct CategoryColors {
 
     static let all: [Color] = [
         food, transport, shopping, entertainment,
-        health, education, housing, utilities,
+        healthcare, education, housing, utilities,
+        telecom, clothing, beauty, social, pets,
         insurance, salary, investment, other
     ]
 }

@@ -8,7 +8,7 @@ struct DSEmptyState: View {
     var body: some View {
         VStack(spacing: M3Spacing.base) {
             Image(systemName: icon)
-                .font(.system(size: 48))
+                .font(.system(size: M3IconSize.extraLarge))
                 .foregroundColor(M3Color.Adaptive.outlineVariant)
             Text(title)
                 .font(M3Typography.bodyLarge)

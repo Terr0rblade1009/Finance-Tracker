@@ -35,7 +35,7 @@ struct FixedExpenseView: View {
                         showAdd = true
                     } label: {
                         Image(systemName: "plus.circle.fill")
-                            .font(.system(size: 24))
+                            .font(.system(size: M3IconSize.medium))
                             .foregroundColor(M3Color.Adaptive.primary)
                     }
                 }
@@ -89,7 +89,7 @@ struct AddFixedExpenseSheet: View {
                     DSTextField(
                         label: L("年度金额 ($)"),
                         text: $annualAmount,
-                        icon: "dollarsign.circle.fill",
+                        icon: "yensign.circle.fill",
                         keyboardType: .decimalPad
                     )
 
@@ -130,7 +130,7 @@ struct AddFixedExpenseSheet: View {
                                 } label: {
                                     HStack(spacing: M3Spacing.sm) {
                                         Image(systemName: cat.icon)
-                                            .font(.system(size: 14))
+                                            .font(M3Typography.bodyMedium)
                                         Text(cat.localizedName)
                                             .font(M3Typography.labelMedium)
                                     }

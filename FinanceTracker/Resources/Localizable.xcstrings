@@ -35,6 +35,7 @@
       }
     },
     "%lld 条" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -45,6 +46,7 @@
       }
     },
     "%lld 条记录" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -88,6 +90,7 @@
       }
     },
     "English" : {
+      "extractionState" : "stale",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -153,6 +156,7 @@
       }
     },
     "中文" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -196,6 +200,7 @@
       }
     },
     "今天" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -228,6 +233,7 @@
       }
     },
     "从微信导入" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -293,6 +299,7 @@
       }
     },
     "关闭" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -369,6 +376,7 @@
       }
     },
     "分析" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -379,6 +387,7 @@
       }
     },
     "分类" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -400,6 +409,7 @@
       }
     },
     "分类管理" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -410,6 +420,7 @@
       }
     },
     "创建账户" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -431,6 +442,7 @@
       }
     },
     "删除" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -463,6 +475,7 @@
       }
     },
     "取消" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -484,6 +497,7 @@
       }
     },
     "固定开支" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -494,6 +508,7 @@
       }
     },
     "图标" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -515,6 +530,7 @@
       }
     },
     "备注" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -525,6 +541,7 @@
       }
     },
     "复制包含金额的文字内容" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -535,6 +552,7 @@
       }
     },
     "外观" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -545,6 +563,7 @@
       }
     },
     "多种方式快速记录你的消费" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -632,6 +651,7 @@
       }
     },
     "导入" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -675,6 +695,7 @@
       }
     },
     "导入文件" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -739,6 +760,17 @@
         }
       }
     },
+    "年付" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Annually"
+          }
+        }
+      }
+    },
     "年付 %@" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -773,6 +805,7 @@
       }
     },
     "微信导入" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -794,6 +827,7 @@
       }
     },
     "快捷记账" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -848,6 +882,7 @@
       }
     },
     "总金额" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -858,6 +893,7 @@
       }
     },
     "成功导入 %lld 条记录" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -923,6 +959,7 @@
       }
     },
     "打开微信，进入账单或对话" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -955,6 +992,7 @@
       }
     },
     "拍摄收据" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -987,6 +1025,7 @@
       }
     },
     "拍照记账" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1052,6 +1091,7 @@
       }
     },
     "支出" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1095,6 +1135,7 @@
       }
     },
     "收入" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1127,6 +1168,7 @@
       }
     },
     "收支日历" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1137,6 +1179,7 @@
       }
     },
     "收支趋势" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1158,6 +1201,7 @@
       }
     },
     "数据" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1223,6 +1267,7 @@
       }
     },
     "日期" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1255,6 +1300,7 @@
       }
     },
     "智能导入" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1374,7 +1420,30 @@
         }
       }
     },
+    "条" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "items"
+          }
+        }
+      }
+    },
+    "条记录" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "records"
+          }
+        }
+      }
+    },
     "正在处理文件..." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1385,6 +1454,7 @@
       }
     },
     "正在聆听..." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1395,6 +1465,7 @@
       }
     },
     "正在识别..." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1405,6 +1476,7 @@
       }
     },
     "此操作不可恢复，将删除所有记账数据。" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1448,6 +1520,7 @@
       }
     },
     "每季约" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1491,6 +1564,7 @@
       }
     },
     "每月约" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1556,6 +1630,7 @@
       }
     },
     "浅色模式" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1566,6 +1641,7 @@
       }
     },
     "深色模式" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1576,6 +1652,7 @@
       }
     },
     "添加" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1586,6 +1663,7 @@
       }
     },
     "添加分类" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1596,6 +1674,7 @@
       }
     },
     "添加固定开支" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1606,6 +1685,7 @@
       }
     },
     "添加备注..." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1616,6 +1696,7 @@
       }
     },
     "添加账户" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1659,6 +1740,7 @@
       }
     },
     "点击麦克风开始语音输入" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1713,6 +1795,7 @@
       }
     },
     "确认删除" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1778,6 +1861,7 @@
       }
     },
     "简约生活，清晰财务" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1788,6 +1872,7 @@
       }
     },
     "粘贴内容" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1798,6 +1883,7 @@
       }
     },
     "粘贴到下方输入框" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1808,6 +1894,7 @@
       }
     },
     "系统自动识别金额和内容" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1851,6 +1938,7 @@
       }
     },
     "解析结果" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1861,6 +1949,7 @@
       }
     },
     "记录成功" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1893,6 +1982,7 @@
       }
     },
     "记账本" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1903,6 +1993,7 @@
       }
     },
     "设置" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1946,6 +2037,7 @@
       }
     },
     "识别结果" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1956,6 +2048,7 @@
       }
     },
     "识别金额" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1988,6 +2081,7 @@
       }
     },
     "语音记账" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2097,6 +2191,7 @@
       }
     },
     "账户管理" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2107,6 +2202,7 @@
       }
     },
     "账户类型" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2117,6 +2213,7 @@
       }
     },
     "账户转账" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2149,6 +2246,7 @@
       }
     },
     "跟随系统" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2258,6 +2356,7 @@
       }
     },
     "选择图片" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2268,6 +2367,7 @@
       }
     },
     "选择导入方式" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2278,6 +2378,7 @@
       }
     },
     "选择日期" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2343,6 +2444,7 @@
       }
     },
     "金额" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2375,6 +2477,7 @@
       }
     },
     "颜色" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2402,136 +2505,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Home"
-          }
-        }
-      }
-    },
-    "搜索分类、备注、金额…" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Search categories, notes, amounts…"
-          }
-        }
-      }
-    },
-    "搜索结果" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Search Results"
-          }
-        }
-      }
-    },
-    "没有匹配的记录" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "No matching records"
-          }
-        }
-      }
-    },
-    "点击底部 + 开始记账" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tap + below to start tracking"
-          }
-        }
-      }
-    },
-    "选分类、填金额、快速记一笔" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pick a category, enter amount, done"
-          }
-        }
-      }
-    },
-    "拍照识别" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Camera"
-          }
-        }
-      }
-    },
-    "拍收据或截图，自动识别金额" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Snap a receipt or screenshot to auto-detect"
-          }
-        }
-      }
-    },
-    "说出金额和用途，AI 帮你记" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Say the amount and purpose, AI logs it"
-          }
-        }
-      }
-    },
-    "笔" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "txn"
-          }
-        }
-      }
-    },
-    "年度金额 ($)" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Annual Amount ($)"
-          }
-        }
-      }
-    },
-    "年付" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Annually"
-          }
-        }
-      }
-    },
-    "条" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "items"
-          }
-        }
-      }
-    },
-    "条记录" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "records"
           }
         }
       }

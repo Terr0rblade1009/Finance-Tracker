@@ -11,7 +11,7 @@ struct DSNavBar: View {
             if let backAction {
                 Button(action: backAction) {
                     Image(systemName: "chevron.left")
-                        .font(.system(size: 16, weight: .semibold))
+                        .font(M3Typography.titleMedium)
                         .foregroundColor(M3Color.Adaptive.onSurface)
                         .frame(width: 32, height: 32)
                 }
@@ -30,7 +30,7 @@ struct DSNavBar: View {
             if let trailingIcon, let trailingAction {
                 Button(action: trailingAction) {
                     Image(systemName: trailingIcon)
-                        .font(.system(size: 20))
+                        .font(.system(size: M3IconSize.medium))
                         .foregroundColor(M3Color.Adaptive.onSurfaceVariant)
                         .frame(width: 32, height: 32)
                 }

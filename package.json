@@ -1,0 +1,24 @@
+{
+  "name": "finance-tracker",
+  "version": "1.0.0",
+  "description": "一款基于 **SwiftUI + SwiftData** 构建的 iOS 记账应用，采用 **Material 3 Expressive** 设计系统，界面极简优美。",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Terr0rblade1009/Finance-Tracker.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Terr0rblade1009/Finance-Tracker/issues"
+  },
+  "homepage": "https://github.com/Terr0rblade1009/Finance-Tracker#readme",
+  "dependencies": {
+    "@figma/code-connect": "^1.4.3"
+  }
+}

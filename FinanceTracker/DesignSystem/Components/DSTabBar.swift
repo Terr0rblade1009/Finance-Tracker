@@ -42,7 +42,7 @@ struct DSTabBar: View {
         } label: {
             VStack(spacing: M3Spacing.xxs) {
                 Image(systemName: item.icon)
-                    .font(.system(size: 20))
+                    .font(.system(size: M3IconSize.medium))
                     .symbolEffect(.bounce, value: selectedTab == item.tag)
                 Text(item.label)
                     .font(M3Typography.labelSmall)
@@ -61,7 +61,7 @@ struct DSTabBar: View {
                     .m3Shadow(M3Elevation.level3)
 
                 Image(systemName: "plus")
-                    .font(.system(size: 24, weight: .medium))
+                    .font(.system(size: M3IconSize.medium, weight: .medium))
                     .foregroundColor(M3Color.Adaptive.onPrimary)
             }
         }

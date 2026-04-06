@@ -72,7 +72,7 @@ struct AddAccountSheet: View {
             ScrollView {
                 VStack(spacing: M3Spacing.xl) {
                     DSTextField(label: L("账户名称"), text: $name, icon: "wallet.pass.fill")
-                    DSTextField(label: L("初始余额"), text: $balance, icon: "dollarsign.circle", keyboardType: .decimalPad)
+                    DSTextField(label: L("初始余额"), text: $balance, icon: "yensign.circle", keyboardType: .decimalPad)
 
                     VStack(alignment: .leading, spacing: M3Spacing.md) {
                         Text(L("账户类型"))
@@ -188,7 +188,7 @@ struct TransferSheet: View {
                     toAccount = accounts.first { $0.id == id }
                 }
 
-                DSTextField(label: L("转账金额"), text: $amount, icon: "dollarsign.circle", keyboardType: .decimalPad)
+                DSTextField(label: L("转账金额"), text: $amount, icon: "yensign.circle", keyboardType: .decimalPad)
 
                 Spacer()
 

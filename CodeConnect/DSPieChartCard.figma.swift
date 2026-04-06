@@ -6,7 +6,7 @@ struct DSPieChartCardFigma: FigmaConnect {
     let figmaNodeUrl = "https://www.figma.com/design/bRtV6gACFbALKiKHXtNsBD/FinanceTracker?node-id=145-2"
 
     @FigmaString("Title")
-    var title: String
+    var title: String = "支出构成"
 
     var body: some View {
         DSPieChartCard(
