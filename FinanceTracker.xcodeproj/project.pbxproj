@@ -51,6 +51,8 @@
 		BB22CC33DD44EE55FF660002 /* DSMonthNavigator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11BB22CC33DD44EE550002 /* DSMonthNavigator.swift */; };
 		BB22CC33DD44EE55FF660003 /* DSTransactionRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11BB22CC33DD44EE550003 /* DSTransactionRow.swift */; };
 		BB22CC33DD44EE55FF660004 /* DSStatRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11BB22CC33DD44EE550004 /* DSStatRow.swift */; };
+		BB11CC22DD33EE44FF550002 /* DSDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB11CC22DD33EE44FF550001 /* DSDialog.swift */; };
+		BB11CC22DD33EE44FF550004 /* DSMethodCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB11CC22DD33EE44FF550003 /* DSMethodCard.swift */; };
 		BB22CC33DD44EE55FF660005 /* DSEmptyState.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11BB22CC33DD44EE550005 /* DSEmptyState.swift */; };
 		BB22CC33DD44EE55FF660006 /* DSSummaryCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11BB22CC33DD44EE550006 /* DSSummaryCard.swift */; };
 		BB22CC33DD44EE55FF660007 /* DSCategoryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11BB22CC33DD44EE550007 /* DSCategoryCell.swift */; };
@@ -120,6 +122,8 @@
 		AA11BB22CC33DD44EE550002 /* DSMonthNavigator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DSMonthNavigator.swift; sourceTree = "<group>"; };
 		AA11BB22CC33DD44EE550003 /* DSTransactionRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DSTransactionRow.swift; sourceTree = "<group>"; };
 		AA11BB22CC33DD44EE550004 /* DSStatRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DSStatRow.swift; sourceTree = "<group>"; };
+		BB11CC22DD33EE44FF550001 /* DSDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DSDialog.swift; sourceTree = "<group>"; };
+		BB11CC22DD33EE44FF550003 /* DSMethodCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DSMethodCard.swift; sourceTree = "<group>"; };
 		AA11BB22CC33DD44EE550005 /* DSEmptyState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DSEmptyState.swift; sourceTree = "<group>"; };
 		AA11BB22CC33DD44EE550006 /* DSSummaryCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DSSummaryCard.swift; sourceTree = "<group>"; };
 		AA11BB22CC33DD44EE550007 /* DSCategoryCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DSCategoryCell.swift; sourceTree = "<group>"; };
@@ -234,9 +238,11 @@
 				AA00BB11CC22DD33EE440016 /* DSCategoryProgressRow.swift */,
 				03ACA7802AA6C14B490CEFB0 /* DSChip.swift */,
 				AA00BB11CC22DD33EE440015 /* DSChipRowSection.swift */,
+				BB11CC22DD33EE44FF550001 /* DSDialog.swift */,
 				AA11BB22CC33DD44EE550005 /* DSEmptyState.swift */,
 				0AFE287D150320A12EA33AC7 /* DSFab.swift */,
 				AA11BB22CC33DD44EE55000A /* DSImportCard.swift */,
+				BB11CC22DD33EE44FF550003 /* DSMethodCard.swift */,
 				AA11BB22CC33DD44EE550002 /* DSMonthNavigator.swift */,
 				AA00BB11CC22DD33EE440011 /* DSNavBar.swift */,
 				E691E9433C4D76BD4C30F576 /* DSNumericKeypad.swift */,
@@ -507,6 +513,8 @@
 				BB22CC33DD44EE55FF660002 /* DSMonthNavigator.swift in Sources */,
 				BB22CC33DD44EE55FF660003 /* DSTransactionRow.swift in Sources */,
 				BB22CC33DD44EE55FF660004 /* DSStatRow.swift in Sources */,
+				BB11CC22DD33EE44FF550002 /* DSDialog.swift in Sources */,
+				BB11CC22DD33EE44FF550004 /* DSMethodCard.swift in Sources */,
 				BB22CC33DD44EE55FF660005 /* DSEmptyState.swift in Sources */,
 				BB22CC33DD44EE55FF660006 /* DSSummaryCard.swift in Sources */,
 				BB22CC33DD44EE55FF660007 /* DSCategoryCell.swift in Sources */,
