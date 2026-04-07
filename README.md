@@ -2,7 +2,11 @@
   <img src="FinanceTracker/Assets.xcassets/AppIcon.appiconset/AppIcon.png" width="120" height="120" alt="Finance Tracker App Icon" style="border-radius: 24px;" />
 </p>
 
-<h1 align="center">记账本 — Finance Tracker</h1>
+<h1 align="center">Finance Tracker</h1>
+
+<p align="center">
+  <a href="README.zh-CN.md">中文</a> | English
+</p>
 
 <p align="center">
   A beautifully crafted iOS expense tracking app built with <strong>SwiftUI + SwiftData</strong>,<br/>
