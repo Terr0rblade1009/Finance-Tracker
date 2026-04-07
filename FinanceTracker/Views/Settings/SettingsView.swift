@@ -11,6 +11,9 @@ struct SettingsView: View {
     @State private var showDeleteConfirm = false
     @State private var exportURL: URL?
     @State private var errorMessage: String?
+    @AppStorage("openai_api_key") private var openAIAPIKey = ""
+    @State private var showAPIKeyInput = false
+    @State private var apiKeyDraft = ""
 
     var body: some View {
         NavigationStack {
@@ -75,6 +78,32 @@ struct SettingsView: View {
                     }
                 }
 
+                Section {
+                    Button {
+                        apiKeyDraft = openAIAPIKey
+                        showAPIKeyInput = true
+                    } label: {
+                        HStack {
+                            DSSettingsRow(icon: "brain", title: L("OpenAI API Key"), color: "10A37F")
+                            Spacer()
+                            if openAIAPIKey.isEmpty {
+                                Text(L("未配置"))
+                                    .font(M3Typography.bodySmall)
+                                    .foregroundColor(M3Color.Adaptive.outline)
+                            } else {
+                                Text("sk-...\(String(openAIAPIKey.suffix(4)))")
+                                    .font(M3Typography.bodySmall)
+                                    .foregroundColor(M3Color.Adaptive.primary)
+                            }
+                        }
+                    }
+                } header: {
+                    Text(L("AI 识别"))
+                } footer: {
+                    Text(L("配置后拍照记账将使用GPT-4o识别收据，效果更准确"))
+                        .font(M3Typography.bodySmall)
+                }
+
                 Section(L("快捷记账")) {
                     NavigationLink {
                         CameraReceiptView()
@@ -124,6 +153,24 @@ struct SettingsView: View {
                 if let url = exportURL {
                     ShareSheet(fileURL: url)
                 }
+            }
+            .alert(L("配置 OpenAI API Key"), isPresented: $showAPIKeyInput) {
+                TextField("sk-...", text: $apiKeyDraft)
+                    .autocorrectionDisabled()
+                    .textInputAutocapitalization(.never)
+                Button(L("保存")) {
+                    openAIAPIKey = apiKeyDraft.trimmingCharacters(in: .whitespacesAndNewlines)
+                    Task { await OpenAIOCRService.shared.setAPIKey(openAIAPIKey) }
+                }
+                if !openAIAPIKey.isEmpty {
+                    Button(L("清除"), role: .destructive) {
+                        openAIAPIKey = ""
+                        Task { await OpenAIOCRService.shared.removeAPIKey() }
+                    }
+                }
+                Button(L("取消"), role: .cancel) {}
+            } message: {
+                Text(L("输入你的OpenAI API Key以启用AI收据识别"))
             }
         }
     }
