@@ -4,12 +4,13 @@ import SwiftData
 struct RegisterView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
-    @State private var viewModel = AuthViewModel()
+    @Environment(AuthViewModel.self) private var viewModel
 
     private let avatarOptions = ["😊", "🐱", "🌸", "💰", "🎯", "🌈", "🦊", "🐼", "🎨", "🌿"]
     @State private var selectedAvatar = "😊"
 
     var body: some View {
+        @Bindable var viewModel = viewModel
         ScrollView {
             VStack(spacing: M3Spacing.xl) {
                 Spacer().frame(height: M3Spacing.lg)
@@ -98,5 +99,10 @@ struct RegisterView: View {
         .background(M3Color.Adaptive.surface)
         .navigationTitle(L("创建账户"))
         .navigationBarTitleDisplayMode(.large)
+        .onAppear {
+            viewModel.displayName = ""
+            viewModel.confirmPassword = ""
+            viewModel.errorMessage = nil
+        }
     }
 }
