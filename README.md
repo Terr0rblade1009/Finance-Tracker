@@ -1,146 +1,158 @@
-# 记账本 - Finance Tracker
+<p align="center">
+  <img src="FinanceTracker/Assets.xcassets/AppIcon.appiconset/AppIcon.png" width="120" height="120" alt="Finance Tracker App Icon" style="border-radius: 24px;" />
+</p>
 
-一款基于 **SwiftUI + SwiftData** 构建的 iOS 记账应用，采用 **Material 3 Expressive** 设计系统，界面极简优美。
+<h1 align="center">记账本 — Finance Tracker</h1>
 
-## 功能特性
+<p align="center">
+  A beautifully crafted iOS expense tracking app built with <strong>SwiftUI + SwiftData</strong>,<br/>
+  featuring <strong>Material 3 Expressive</strong> design and smart import capabilities.
+</p>
 
-### 核心功能
-- **数字键盘记账** - 快速输入支出/收入金额
-- **二级分类系统** - 14+ 支出分类、7+ 收入分类，支持自定义
-- **固定开支管理** - 输入年度金额，自动计算月/季费用（房贷、保险、学费等）
-- **多账户管理** - 现金、银行卡、支付宝、微信等，支持账户间转账
+<p align="center">
+  <img src="https://img.shields.io/badge/platform-iOS%2017%2B-blue?style=flat-square" alt="iOS 17+" />
+  <img src="https://img.shields.io/badge/swift-5.9-orange?style=flat-square" alt="Swift 5.9" />
+  <img src="https://img.shields.io/badge/design-Material%203-green?style=flat-square" alt="Material 3" />
+  <img src="https://img.shields.io/badge/data-SwiftData-purple?style=flat-square" alt="SwiftData" />
+  <img src="https://img.shields.io/badge/license-MIT-lightgrey?style=flat-square" alt="MIT License" />
+</p>
 
-### 智能导入
-- **拍照记账** - 拍摄收据，OCR 自动识别金额
-- **截图记账** - 导入截图识别账单
-- **语音记账** - 说出消费信息，自动解析金额
-- **微信导入** - 粘贴微信对话/账单，自动提取
-- **文件导入** - 支持 CSV、PDF、JPG、PNG 格式
+---
 
-### 数据分析
-- **多维度统计** - 月度/季度/年度分析
-- **图表可视化** - 饼图（分类构成）、柱状图（收支趋势）
-- **分类排行** - 各分类支出占比和明细
-- **数据导出** - CSV/JSON 格式导出
+## Screenshots
 
-### 用户系统
-- 本地注册/登录（SwiftData 存储）
-- 个性化头像选择
-- 深色/浅色模式切换
+<p align="center">
+  <img src="screenshots/home-dashboard.svg" width="220" alt="Home Dashboard" />
+  &nbsp;&nbsp;
+  <img src="screenshots/expense-input.svg" width="220" alt="Expense Input" />
+  &nbsp;&nbsp;
+  <img src="screenshots/analysis.svg" width="220" alt="Data Analysis" />
+  &nbsp;&nbsp;
+  <img src="screenshots/smart-import.svg" width="220" alt="Smart Import" />
+</p>
 
-## 技术架构
+<p align="center">
+  <em>Home Dashboard &nbsp;|&nbsp; Expense Input &nbsp;|&nbsp; Data Analysis &nbsp;|&nbsp; Smart Import</em>
+</p>
 
-### 技术栈
-| 层级 | 技术 |
-|------|------|
-| UI 框架 | SwiftUI (iOS 17+) |
-| 数据持久化 | SwiftData |
-| 图表 | Swift Charts |
-| OCR | Vision Framework |
-| 语音识别 | Speech Framework |
-| 设计系统 | Material 3 Expressive |
+---
 
-### 项目结构
+## Features
+
+### Core
+- **Digital Keypad Entry** — Quick numeric input for expenses and income
+- **Two-level Categories** — 14+ expense and 7+ income categories, fully customizable
+- **Fixed Expense Manager** — Enter annual amounts, auto-calculates monthly/quarterly (mortgage, insurance, tuition, etc.)
+- **Multi-account Support** — Cash, bank cards, Alipay, WeChat, with inter-account transfers
+
+### Smart Import
+- **Receipt Scanner** — Camera-based OCR using Vision Framework
+- **Screenshot Import** — Extract transaction data from bill screenshots
+- **Voice Input** — Speak your expenses, auto-parsed via Speech Framework
+- **WeChat Import** — Paste WeChat conversations/bills for auto-extraction
+- **File Import** — Supports CSV, PDF, JPG, PNG formats
+
+### Data Analysis
+- **Multi-period Reports** — Monthly, quarterly, and yearly breakdowns
+- **Charts & Visualization** — Pie charts (category composition) and bar charts (spending trends) via Swift Charts
+- **Category Rankings** — Per-category spending share and details
+- **Data Export** — CSV and JSON export
+
+### User Experience
+- **Local Auth** — Registration and login with SwiftData persistence
+- **Personalized Avatars** — Choose your profile icon
+- **Dark / Light Mode** — Full theme support
+- **Bilingual** — Chinese (Simplified) and English localization
+
+---
+
+## Tech Stack
+
+| Layer | Technology |
+|---|---|
+| **UI Framework** | SwiftUI (iOS 17+) |
+| **Data Persistence** | SwiftData |
+| **Charts** | Swift Charts |
+| **OCR** | Vision Framework |
+| **Speech Recognition** | Speech Framework |
+| **Design System** | Material 3 Expressive |
+| **Design Sync** | Figma Code Connect |
+
+---
+
+## Project Structure
+
 ```
 FinanceTracker/
-├── App/                          # App 入口
-│   └── FinanceTrackerApp.swift
-├── DesignSystem/                 # 设计系统
-│   ├── Tokens/                   # 设计 Token
-│   │   ├── ColorTokens.swift     # M3 色彩（Light/Dark）
-│   │   ├── TypographyTokens.swift # M3 字体
-│   │   ├── SpacingTokens.swift   # 间距 + 圆角 + 阴影
-│   │   └── FigmaTokenExport.swift # Figma 兼容导出
-│   ├── Components/               # 通用组件
-│   │   ├── DSButton.swift        # 按钮（5种变体）
-│   │   ├── DSCard.swift          # 卡片（3种变体）
-│   │   ├── DSTextField.swift     # 输入框
-│   │   ├── DSChip.swift          # 标签
-│   │   ├── DSNumericKeypad.swift # 数字键盘
-│   │   ├── DSSearchBar.swift     # 搜索栏
-│   │   ├── DSFab.swift           # FAB 按钮
-│   │   └── DSBottomSheet.swift   # 底部弹窗
-│   └── Theme/
-│       └── Theme.swift           # 主题配置
-├── Models/                       # SwiftData 模型
-│   ├── User.swift
-│   ├── Expense.swift
-│   ├── ExpenseCategory.swift
-│   ├── Account.swift
-│   ├── Budget.swift
-│   └── FixedExpense.swift
-├── Views/                        # 视图层
-│   ├── Auth/                     # 登录/注册
-│   ├── Home/                     # 首页/仪表盘
-│   ├── Input/                    # 记账输入
-│   ├── Import/                   # 导入（相机/文件/语音/微信）
-│   ├── Analysis/                 # 数据分析
-│   ├── Categories/               # 分类管理
-│   ├── Accounts/                 # 账户管理
-│   ├── Settings/                 # 设置
-│   └── MainTabView.swift         # 主导航
-├── ViewModels/                   # 视图模型
-│   ├── AuthViewModel.swift
-│   ├── ExpenseViewModel.swift
-│   ├── AnalysisViewModel.swift
-│   └── ImportViewModel.swift
-├── Services/                     # 服务层
-│   ├── OCRService.swift          # OCR 文字识别
-│   ├── VoiceRecognitionService.swift # 语音识别
-│   └── DataExportService.swift   # 数据导出
-└── Utilities/
-    └── Extensions.swift          # 通用扩展
+├── App/                        # App entry point
+├── DesignSystem/
+│   ├── Tokens/                 # M3 color, typography, spacing tokens
+│   ├── Components/             # 30 reusable UI components
+│   └── Theme/                  # Theme configuration
+├── Models/                     # SwiftData models (User, Expense, Account, Budget...)
+├── Views/
+│   ├── Auth/                   # Login & registration
+│   ├── Home/                   # Dashboard & calendar
+│   ├── Input/                  # Expense entry with numeric keypad
+│   ├── Import/                 # Camera, voice, file, WeChat import
+│   ├── Analysis/               # Reports & charts
+│   ├── Categories/             # Category management
+│   ├── Accounts/               # Account management
+│   └── Settings/               # App preferences
+├── ViewModels/                 # MVVM view logic
+├── Services/                   # OCR, voice recognition, data export
+└── Utilities/                  # Extensions & localization
 ```
 
-## 设计系统
+---
 
-### Material 3 Expressive 设计 Token
+## Design System
 
-完全兼容 Figma 设计变量，支持通过 Figma Token Studio 同步：
+Built on **Material 3 Expressive** with full Figma synchronization:
 
-- **Color Tokens**: `md-sys-color-*` 命名，Light/Dark 双模式
-- **Typography**: `md-sys-typescale-*` 完整字体系统
-- **Spacing**: `md-sys-spacing-*` 8pt 网格系统
-- **Shape**: `md-sys-shape-corner-*` 圆角系统
-- **Elevation**: `md-sys-elevation-level*` 阴影层级
+- **Color Tokens** — `md-sys-color-*` naming, Light/Dark dual-mode palette
+- **Typography** — `md-sys-typescale-*` complete type scale
+- **Spacing** — `md-sys-spacing-*` 8pt grid system
+- **Shape** — `md-sys-shape-corner-*` corner radius system
+- **Elevation** — `md-sys-elevation-level*` shadow hierarchy
+- **30 Components** — Buttons, cards, chips, FABs, sheets, dialogs, charts, and more
 
-### Figma 同步
-
-项目内置 `FigmaTokenExport.swift`，可生成 Figma Token Studio 兼容的 JSON：
+Figma Token Studio compatible JSON export is built in:
 
 ```swift
-let colorTokens = FigmaDesignTokens.generateColorTokensJSON()
-let typographyTokens = FigmaDesignTokens.generateTypographyTokensJSON()
-let fullTokens = FigmaDesignTokens.generateFullTokensJSON()
+let tokens = FigmaDesignTokens.generateFullTokensJSON()
 ```
 
-## 开始使用
+---
 
-### 环境要求
+## Getting Started
+
+### Requirements
 - Xcode 15.0+
 - iOS 17.0+
 - Swift 5.9+
 
-### 构建步骤
+### Build & Run
 
-1. 在 Xcode 中打开项目：
-   ```bash
-   open FinanceTracker.xcodeproj
-   ```
-   
-   或创建新 Xcode 项目并将 `FinanceTracker/` 文件夹拖入。
+```bash
+# Clone the repository
+git clone https://github.com/Terr0rblade1009/Finance-Tracker.git
 
-2. 选择 iOS 模拟器或真机目标
+# Open in Xcode
+open FinanceTracker.xcodeproj
 
-3. 按 `Cmd + R` 运行
+# Select a simulator or device, then press Cmd + R
+```
 
-### 权限配置
-应用需要以下权限（已在 Info.plist 中配置）：
-- 相机（拍照记账）
-- 麦克风（语音记账）
-- 语音识别
-- 相册访问
+### Permissions
+The app requests the following permissions (pre-configured in Info.plist):
+- **Camera** — Receipt scanning
+- **Microphone** — Voice input
+- **Speech Recognition** — Voice-to-text parsing
+- **Photo Library** — Image import
 
-## 许可证
+---
 
-MIT License
+## License
+
+[MIT License](LICENSE) — free to use, modify, and distribute.
