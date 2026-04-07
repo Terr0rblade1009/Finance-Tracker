@@ -3,6 +3,7 @@ import PackageDescription
 
 let package = Package(
     name: "FinanceTrackerCodeConnect",
+    defaultLocalization: "zh-Hans",
     platforms: [.iOS(.v17), .macOS(.v14)],
     dependencies: [
         .package(url: "https://github.com/figma/code-connect", from: "1.0.0"),
@@ -22,7 +23,10 @@ let package = Package(
                 "FinanceTracker/Services",
                 "FinanceTracker/Utilities",
                 "FinanceTracker/Resources",
-                "FinanceTracker/Info.plist"
+                "FinanceTracker/Info.plist",
+                "FinanceTracker/Assets.xcassets",
+                "CodeConnect/README.md",
+                "CodeConnect/README_CN.md"
             ],
             sources: ["FinanceTracker/DesignSystem", "CodeConnect"]
         )

@@ -9,9 +9,6 @@ struct DSTextField_default_connection: FigmaConnect {
     @FigmaString("Label Text")
     var label: String = "Label"
 
-    @FigmaString("Placeholder")
-    var placeholder: String = "Input text"
-
     @FigmaBoolean("Show Icon", hideDefault: true)
     var showIcon: Bool = false
 
