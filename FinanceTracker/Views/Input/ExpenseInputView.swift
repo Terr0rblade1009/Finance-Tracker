@@ -14,6 +14,23 @@ struct ExpenseInputView: View {
     @State private var showSuccess = false
     @State private var errorMessage: String?
 
+    private let prefillAmount: Decimal?
+    private let prefillNote: String?
+    private let prefillReceiptImageData: Data?
+    private let prefillSourceType: Expense.SourceType?
+
+    init(
+        prefillAmount: Decimal? = nil,
+        prefillNote: String? = nil,
+        prefillReceiptImageData: Data? = nil,
+        prefillSourceType: Expense.SourceType? = nil
+    ) {
+        self.prefillAmount = prefillAmount
+        self.prefillNote = prefillNote
+        self.prefillReceiptImageData = prefillReceiptImageData
+        self.prefillSourceType = prefillSourceType
+    }
+
     private var categories: [ExpenseCategory] {
         selectedTab == 0 ? expenseCategories : incomeCategories
     }
@@ -61,6 +78,20 @@ struct ExpenseInputView: View {
             .overlay {
                 if showSuccess {
                     successOverlay
+                }
+            }
+            .onAppear {
+                if let amount = prefillAmount {
+                    viewModel.amount = "\(amount)"
+                }
+                if let note = prefillNote {
+                    viewModel.note = note
+                }
+                if let imageData = prefillReceiptImageData {
+                    viewModel.receiptImageData = imageData
+                }
+                if let source = prefillSourceType {
+                    viewModel.sourceType = source
                 }
             }
         }

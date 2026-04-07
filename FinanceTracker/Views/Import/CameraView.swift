@@ -16,7 +16,7 @@ struct CameraReceiptView: View {
     @State private var showImagePicker = false
     @State private var showCamera = false
     @State private var receiptItems: [ReceiptItem] = []
-    @State private var saveError: String?
+    @State private var showExpenseInput = false
 
     var body: some View {
         NavigationStack {
@@ -55,6 +55,14 @@ struct CameraReceiptView: View {
                 if let image = newImage {
                     processImage(image)
                 }
+            }
+            .sheet(isPresented: $showExpenseInput) {
+                ExpenseInputView(
+                    prefillAmount: ocrPrefillAmount,
+                    prefillNote: ocrPrefillNote,
+                    prefillReceiptImageData: capturedImage?.jpegData(compressionQuality: 0.6),
+                    prefillSourceType: .ocr
+                )
             }
         }
     }
@@ -163,48 +171,28 @@ struct CameraReceiptView: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
             }
 
-            if let error = saveError {
-                Text(error)
-                    .font(M3Typography.bodySmall)
-                    .foregroundColor(M3Color.Adaptive.error)
-            }
-
-            // I6: Actually save the expense
-            if recognizedAmount != nil {
-                DSButton(
-                    title: L("记录此笔支出"),
-                    icon: "checkmark",
-                    variant: .filled,
-                    size: .large,
-                    isFullWidth: true
-                ) {
-                    saveRecognizedExpense()
-                }
+            DSButton(
+                title: L("导入到记账"),
+                icon: "square.and.arrow.down",
+                variant: .filled,
+                size: .large,
+                isFullWidth: true
+            ) {
+                showExpenseInput = true
             }
         }
     }
 
-    // I6: Save the OCR-recognized expense to SwiftData
-    private func saveRecognizedExpense() {
-        guard let amount = recognizedAmount, amount > 0 else { return }
-
-        let note = receiptItems.map(\.name).joined(separator: ", ")
-        let imageData = capturedImage?.jpegData(compressionQuality: 0.6)
-
-        let expense = Expense(
-            amount: amount,
-            note: note,
-            date: Date(),
-            receiptImageData: imageData,
-            sourceType: .camera
-        )
-        modelContext.insert(expense)
-        do {
-            try modelContext.save()
-            dismiss()
-        } catch {
-            saveError = L("保存失败") + "：\(error.localizedDescription)"
+    private var ocrPrefillAmount: Decimal {
+        if let total = recognizedAmount { return total }
+        if !receiptItems.isEmpty {
+            return receiptItems.reduce(Decimal.zero) { $0 + $1.amount }
         }
+        return 0
+    }
+
+    private var ocrPrefillNote: String {
+        receiptItems.map(\.name).joined(separator: ", ")
     }
 
     private func processImage(_ image: UIImage) {
