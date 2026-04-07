@@ -10,7 +10,52 @@ A personal finance tracking iOS app built with **SwiftUI + SwiftData**, featurin
 |----------|------|
 | Component Library (Design System) | [Figma File](https://www.figma.com/design/bRtV6gACFbALKiKHXtNsBD/FinanceTracker) |
 | App Screens | [Figma File](https://www.figma.com/design/WtLHNC43uTh6c8jZDiLLUz/FinanceTracker-App-Screens) |
-| Dev Mode (inspect components) | [Dev Mode](https://www.figma.com/design/bRtV6gACFbALKiKHXtNsBD/FinanceTracker?m=dev) |
+
+### Figma Code Connect
+
+This project uses [Figma Code Connect](https://github.com/figma/code-connect) with the **Swift parser** to link every design system component in Figma to its SwiftUI implementation. When developers inspect a component in Figma Dev Mode, they see the actual SwiftUI code snippet instead of generic CSS.
+
+**118 components connected** across 29 Code Connect files.
+
+#### Connected Components
+
+| Category | Components |
+|----------|-----------|
+| **Inputs** | `DSButton` · `DSTextField` · `DSSearchBar` · `DSChip` · `DSNumericKeypad` · `DSFab` |
+| **Layout** | `DSCard` · `DSBottomSheet` · `DSDialog` · `DSSectionHeader` · `DSNavBar` · `DSTabBar` · `DSSegmentedControl` |
+| **Data Display** | `DSTransactionRow` · `DSTransactionListSection` · `DSSummaryCard` · `DSStatRow` · `DSPieChartCard` · `DSAmountDisplay` · `DSMonthNavigator` |
+| **Categories** | `DSCategoryCell` · `DSCategoryProgressRow` · `DSCategoryGridSection` · `DSChipRowSection` |
+| **Content** | `DSEmptyState` · `DSSettingsRow` · `DSImportCard` · `DSMethodCard` |
+| **Icons** | `DSIcon` — 70+ system icons for categories, accounts, navigation, and actions |
+
+#### Prop Mapping Features
+
+- `@FigmaString` — maps text properties (titles, labels, amounts)
+- `@FigmaBoolean` with `hideDefault` — conditionally shows/hides parameters (e.g. subtitle, icon)
+- `@FigmaEnum` — maps variant and size properties to Swift enums
+- `@FigmaInstance` — maps nested component instances
+- Variant mapping via `let variant` — different code per Figma variant (e.g. TextField states, FAB sizes)
+
+#### Publishing
+
+```bash
+# Build the Swift parser and publish all Code Connect files to Figma
+npx figma connect publish
+```
+
+Configuration is in `figma.config.json`:
+
+```json
+{
+  "codeConnect": {
+    "parser": "swift",
+    "include": ["CodeConnect/**/*.figma.swift"],
+    "swiftPackagePath": "Package.swift"
+  }
+}
+```
+
+Code Connect files live in `CodeConnect/` and the Swift package is defined in `Package.swift` (used only by the Figma CLI parser, not by the Xcode project).
 
 ## Features
 
@@ -183,60 +228,6 @@ Built-in `FigmaTokenExport.swift` generates Figma Token Studio compatible JSON:
 ```swift
 let tokens = FigmaDesignTokens.generateFullTokensJSON()
 ```
-
-## Figma
-
-| Resource | Link |
-|----------|------|
-| Component Library (Design System) | [Figma File](https://www.figma.com/design/bRtV6gACFbALKiKHXtNsBD/FinanceTracker) |
-| App Screens | [Figma File](https://www.figma.com/design/WtLHNC43uTh6c8jZDiLLUz/FinanceTracker-App-Screens) |
-| Dev Mode (inspect components) | [Dev Mode](https://www.figma.com/design/bRtV6gACFbALKiKHXtNsBD/FinanceTracker?m=dev) |
-
-### Figma Code Connect
-
-This project uses [Figma Code Connect](https://github.com/figma/code-connect) with the **Swift parser** to link every design system component in Figma to its SwiftUI implementation. When developers inspect a component in Figma Dev Mode, they see the actual SwiftUI code snippet instead of generic CSS.
-
-**118 components connected** across 29 Code Connect files.
-
-#### Connected Components
-
-| Category | Components |
-|----------|-----------|
-| **Inputs** | `DSButton` · `DSTextField` · `DSSearchBar` · `DSChip` · `DSNumericKeypad` · `DSFab` |
-| **Layout** | `DSCard` · `DSBottomSheet` · `DSDialog` · `DSSectionHeader` · `DSNavBar` · `DSTabBar` · `DSSegmentedControl` |
-| **Data Display** | `DSTransactionRow` · `DSTransactionListSection` · `DSSummaryCard` · `DSStatRow` · `DSPieChartCard` · `DSAmountDisplay` · `DSMonthNavigator` |
-| **Categories** | `DSCategoryCell` · `DSCategoryProgressRow` · `DSCategoryGridSection` · `DSChipRowSection` |
-| **Content** | `DSEmptyState` · `DSSettingsRow` · `DSImportCard` · `DSMethodCard` |
-| **Icons** | `DSIcon` — 70+ system icons for categories, accounts, navigation, and actions |
-
-#### Prop Mapping Features
-
-- `@FigmaString` — maps text properties (titles, labels, amounts)
-- `@FigmaBoolean` with `hideDefault` — conditionally shows/hides parameters (e.g. subtitle, icon)
-- `@FigmaEnum` — maps variant and size properties to Swift enums
-- `@FigmaInstance` — maps nested component instances
-- Variant mapping via `let variant` — different code per Figma variant (e.g. TextField states, FAB sizes)
-
-#### Publishing
-
-```bash
-# Build the Swift parser and publish all Code Connect files to Figma
-npx figma connect publish
-```
-
-Configuration is in `figma.config.json`:
-
-```json
-{
-  "codeConnect": {
-    "parser": "swift",
-    "include": ["CodeConnect/**/*.figma.swift"],
-    "swiftPackagePath": "Package.swift"
-  }
-}
-```
-
-Code Connect files live in `CodeConnect/` and the Swift package is defined in `Package.swift` (used only by the Figma CLI parser, not by the Xcode project).
 
 ## License
 
