@@ -23,24 +23,6 @@
 
 ---
 
-## 应用截图
-
-<p align="center">
-  <img src="screenshots/home-dashboard.svg" width="220" alt="首页仪表盘" />
-  &nbsp;&nbsp;
-  <img src="screenshots/expense-input.svg" width="220" alt="记账输入" />
-  &nbsp;&nbsp;
-  <img src="screenshots/analysis.svg" width="220" alt="数据分析" />
-  &nbsp;&nbsp;
-  <img src="screenshots/smart-import.svg" width="220" alt="智能导入" />
-</p>
-
-<p align="center">
-  <em>首页仪表盘 &nbsp;|&nbsp; 记账输入 &nbsp;|&nbsp; 数据分析 &nbsp;|&nbsp; 智能导入</em>
-</p>
-
----
-
 ## 功能特性
 
 ### 核心功能

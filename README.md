@@ -23,24 +23,6 @@
 
 ---
 
-## Screenshots
-
-<p align="center">
-  <img src="screenshots/home-dashboard.svg" width="220" alt="Home Dashboard" />
-  &nbsp;&nbsp;
-  <img src="screenshots/expense-input.svg" width="220" alt="Expense Input" />
-  &nbsp;&nbsp;
-  <img src="screenshots/analysis.svg" width="220" alt="Data Analysis" />
-  &nbsp;&nbsp;
-  <img src="screenshots/smart-import.svg" width="220" alt="Smart Import" />
-</p>
-
-<p align="center">
-  <em>Home Dashboard &nbsp;|&nbsp; Expense Input &nbsp;|&nbsp; Data Analysis &nbsp;|&nbsp; Smart Import</em>
-</p>
-
----
-
 ## Features
 
 ### Core
