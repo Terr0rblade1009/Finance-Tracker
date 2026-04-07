@@ -11,13 +11,10 @@ struct DSSettingsRowFigma: FigmaConnect {
     @FigmaString("Icon Name")
     var iconName: String = "wallet.pass.fill"
 
-    @FigmaBoolean("hasChevron")
-    var hasChevron: Bool = true
-
     var body: some View {
         DSSettingsRow(
-            icon: iconName,
-            title: title,
+            icon: self.iconName,
+            title: self.title,
             color: "42A5F5"
         )
     }

@@ -5,7 +5,7 @@ struct DSTransactionRowFigma: FigmaConnect {
     let component = DSTransactionRow.self
     let figmaNodeUrl = "https://www.figma.com/design/bRtV6gACFbALKiKHXtNsBD/FinanceTracker?node-id=137-19"
 
-    @FigmaBoolean("hasSubtitle")
+    @FigmaBoolean("hasSubtitle", hideDefault: true)
     var hasSubtitle: Bool = false
 
     @FigmaString("Title")
@@ -25,12 +25,12 @@ struct DSTransactionRowFigma: FigmaConnect {
 
     var body: some View {
         DSTransactionRow(
-            icon: iconName,
+            icon: self.iconName,
             iconColor: Color(hex: "FF8A65"),
-            title: title,
-            subtitle: hasSubtitle ? subtitle : nil,
-            trailingTop: amount,
-            trailingBottom: date
+            title: self.title,
+            subtitle: self.hasSubtitle ? self.subtitle : nil,
+            trailingTop: self.amount,
+            trailingBottom: self.date
         )
     }
 }

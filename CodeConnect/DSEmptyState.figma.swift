@@ -5,7 +5,7 @@ struct DSEmptyStateFigma: FigmaConnect {
     let component = DSEmptyState.self
     let figmaNodeUrl = "https://www.figma.com/design/bRtV6gACFbALKiKHXtNsBD/FinanceTracker?node-id=134-9"
 
-    @FigmaBoolean("hasSubtitle")
+    @FigmaBoolean("hasSubtitle", hideDefault: true)
     var hasSubtitle: Bool = false
 
     @FigmaString("Title")
@@ -19,9 +19,9 @@ struct DSEmptyStateFigma: FigmaConnect {
 
     var body: some View {
         DSEmptyState(
-            icon: iconName,
-            title: title,
-            subtitle: hasSubtitle ? subtitle : nil
+            icon: self.iconName,
+            title: self.title,
+            subtitle: self.hasSubtitle ? self.subtitle : nil
         )
     }
 }
