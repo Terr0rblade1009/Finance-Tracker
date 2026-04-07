@@ -18,17 +18,23 @@ struct ExpenseInputView: View {
     private let prefillNote: String?
     private let prefillReceiptImageData: Data?
     private let prefillSourceType: Expense.SourceType?
+    private let prefillCategoryName: String?
+    private let onSaved: (() -> Void)?
 
     init(
         prefillAmount: Decimal? = nil,
         prefillNote: String? = nil,
         prefillReceiptImageData: Data? = nil,
-        prefillSourceType: Expense.SourceType? = nil
+        prefillSourceType: Expense.SourceType? = nil,
+        prefillCategoryName: String? = nil,
+        onSaved: (() -> Void)? = nil
     ) {
         self.prefillAmount = prefillAmount
         self.prefillNote = prefillNote
         self.prefillReceiptImageData = prefillReceiptImageData
         self.prefillSourceType = prefillSourceType
+        self.prefillCategoryName = prefillCategoryName
+        self.onSaved = onSaved
     }
 
     private var categories: [ExpenseCategory] {
@@ -92,6 +98,11 @@ struct ExpenseInputView: View {
                 }
                 if let source = prefillSourceType {
                     viewModel.sourceType = source
+                }
+                if let catName = prefillCategoryName {
+                    viewModel.selectedCategory = categories.first {
+                        $0.name == catName || $0.localizedName == catName
+                    }
                 }
             }
         }
@@ -207,6 +218,7 @@ struct ExpenseInputView: View {
         .onAppear {
             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                 withAnimation { showSuccess = false }
+                onSaved?()
                 dismiss()
             }
         }

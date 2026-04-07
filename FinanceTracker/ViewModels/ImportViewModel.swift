@@ -37,6 +37,31 @@ class ImportViewModel {
         importedExpenses = parsed
     }
 
+    @MainActor
+    func parseWithAI(_ text: String) async {
+        isProcessing = true
+        recognizedText = text
+
+        do {
+            let results = try await OpenAIOCRService.shared.parseExpensesFromDocumentText(text)
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "yyyy-MM-dd"
+
+            importedExpenses = results.map { item in
+                ParsedExpense(
+                    amount: item.amount,
+                    note: item.note,
+                    date: item.date.flatMap { dateFormatter.date(from: $0) } ?? Date(),
+                    isIncome: item.isIncome
+                )
+            }
+        } catch {
+            parseRecognizedText()
+        }
+
+        isProcessing = false
+    }
+
     func parseWeChatText(_ text: String) {
         recognizedText = text
         let lines = text.components(separatedBy: .newlines)

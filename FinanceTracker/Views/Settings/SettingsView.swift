@@ -14,6 +14,14 @@ struct SettingsView: View {
     @AppStorage("openai_api_key") private var openAIAPIKey = ""
     @State private var showAPIKeyInput = false
     @State private var apiKeyDraft = ""
+    @State private var isTestingKey = false
+    @State private var keyTestResult: KeyTestStatus?
+
+    private enum KeyTestStatus {
+        case success
+        case invalid
+        case error(String)
+    }
 
     var body: some View {
         NavigationStack {
@@ -97,10 +105,42 @@ struct SettingsView: View {
                             }
                         }
                     }
+
+                    if !openAIAPIKey.isEmpty {
+                        Button {
+                            testOpenAIKey()
+                        } label: {
+                            HStack {
+                                DSSettingsRow(icon: "checkmark.shield.fill", title: L("测试连接"), color: "42A5F5")
+                                Spacer()
+                                if isTestingKey {
+                                    ProgressView()
+                                        .controlSize(.small)
+                                } else if let result = keyTestResult {
+                                    switch result {
+                                    case .success:
+                                        Label(L("有效"), systemImage: "checkmark.circle.fill")
+                                            .font(M3Typography.bodySmall)
+                                            .foregroundColor(.green)
+                                    case .invalid:
+                                        Label(L("无效"), systemImage: "xmark.circle.fill")
+                                            .font(M3Typography.bodySmall)
+                                            .foregroundColor(.red)
+                                    case .error(let msg):
+                                        Label(msg, systemImage: "exclamationmark.triangle.fill")
+                                            .font(M3Typography.bodySmall)
+                                            .foregroundColor(.orange)
+                                            .lineLimit(1)
+                                    }
+                                }
+                            }
+                        }
+                        .disabled(isTestingKey)
+                    }
                 } header: {
                     Text(L("AI 识别"))
                 } footer: {
-                    Text(L("配置后拍照记账将使用GPT-4o识别收据，效果更准确"))
+                    Text(L("配置后拍照记账、语音记账、文件导入均可使用GPT提升识别准确度"))
                         .font(M3Typography.bodySmall)
                 }
 
@@ -160,11 +200,13 @@ struct SettingsView: View {
                     .textInputAutocapitalization(.never)
                 Button(L("保存")) {
                     openAIAPIKey = apiKeyDraft.trimmingCharacters(in: .whitespacesAndNewlines)
+                    keyTestResult = nil
                     Task { await OpenAIOCRService.shared.setAPIKey(openAIAPIKey) }
                 }
                 if !openAIAPIKey.isEmpty {
                     Button(L("清除"), role: .destructive) {
                         openAIAPIKey = ""
+                        keyTestResult = nil
                         Task { await OpenAIOCRService.shared.removeAPIKey() }
                     }
                 }
@@ -203,6 +245,25 @@ struct SettingsView: View {
             showExportSheet = true
         } catch {
             errorMessage = L("导出失败") + "：\(error.localizedDescription)"
+        }
+    }
+
+    private func testOpenAIKey() {
+        isTestingKey = true
+        keyTestResult = nil
+        Task {
+            let result = await OpenAIOCRService.shared.testAPIKey()
+            await MainActor.run {
+                isTestingKey = false
+                switch result {
+                case .valid:
+                    keyTestResult = .success
+                case .invalid:
+                    keyTestResult = .invalid
+                case .networkError(let msg):
+                    keyTestResult = .error(msg)
+                }
+            }
         }
     }
 

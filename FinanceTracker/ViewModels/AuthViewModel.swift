@@ -115,7 +115,6 @@ class AuthViewModel {
             try modelContext.save()
 
             currentUser = user
-            UserDefaults.standard.set(true, forKey: "isLoggedIn")
             UserDefaults.standard.set(user.id.uuidString, forKey: "currentUserId")
         } catch {
             errorMessage = L("注册失败") + "：\(error.localizedDescription)"

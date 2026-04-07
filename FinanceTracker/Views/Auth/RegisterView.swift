@@ -5,6 +5,8 @@ struct RegisterView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
     @Environment(AuthViewModel.self) private var viewModel
+    @AppStorage("isLoggedIn") private var isLoggedIn = false
+    @State private var showSuccess = false
 
     private let avatarOptions = ["😊", "🐱", "🌸", "💰", "🎯", "🌈", "🦊", "🐼", "🎨", "🌿"]
     @State private var selectedAvatar = "😊"
@@ -92,6 +94,9 @@ struct RegisterView: View {
                     isLoading: viewModel.isLoading
                 ) {
                     viewModel.register(modelContext: modelContext)
+                    if viewModel.currentUser != nil {
+                        withAnimation(.spring) { showSuccess = true }
+                    }
                 }
             }
             .padding(.horizontal, M3Spacing.xl)
@@ -99,10 +104,41 @@ struct RegisterView: View {
         .background(M3Color.Adaptive.surface)
         .navigationTitle(L("创建账户"))
         .navigationBarTitleDisplayMode(.large)
+        .overlay {
+            if showSuccess {
+                successOverlay
+            }
+        }
         .onAppear {
             viewModel.displayName = ""
             viewModel.confirmPassword = ""
             viewModel.errorMessage = nil
+        }
+    }
+
+    private var successOverlay: some View {
+        ZStack {
+            M3Color.scrim
+                .ignoresSafeArea()
+
+            VStack(spacing: M3Spacing.base) {
+                Image(systemName: "checkmark.circle.fill")
+                    .font(.system(size: 56))
+                    .foregroundColor(M3Color.Adaptive.primary)
+                Text(L("注册成功"))
+                    .font(M3Typography.headlineSmall)
+                    .foregroundColor(M3Color.Adaptive.inverseOnSurface)
+                Text(L("欢迎使用记账本"))
+                    .font(M3Typography.bodyMedium)
+                    .foregroundColor(M3Color.Adaptive.inverseOnSurface.opacity(0.7))
+            }
+            .transition(.scale.combined(with: .opacity))
+        }
+        .onAppear {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                withAnimation { showSuccess = false }
+                isLoggedIn = true
+            }
         }
     }
 }

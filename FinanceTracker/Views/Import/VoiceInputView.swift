@@ -1,13 +1,20 @@
 import SwiftUI
+import SwiftData
 
 struct VoiceInputView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
+    @Query(filter: #Predicate<ExpenseCategory> { !$0.isIncome }) private var expenseCategories: [ExpenseCategory]
+    @Query(filter: #Predicate<ExpenseCategory> { $0.isIncome }) private var incomeCategories: [ExpenseCategory]
     @State private var voiceService = VoiceRecognitionService()
     @State private var parsedAmount: Decimal?
     @State private var parsedNote: String?
+    @State private var parsedIsIncome = false
+    @State private var parsedCategory: ExpenseCategory?
     @State private var hasPermission = false
     @State private var saveError: String?
+    @State private var isParsingWithAI = false
+    @State private var usedAI = false
 
     var body: some View {
         NavigationStack {
@@ -20,7 +27,16 @@ struct VoiceInputView: View {
                 // Recognized text
                 textDisplay
 
-                // Parsed result
+                if isParsingWithAI {
+                    VStack(spacing: M3Spacing.md) {
+                        ProgressView()
+                            .controlSize(.small)
+                        Text(L("AI 解析中..."))
+                            .font(M3Typography.bodySmall)
+                            .foregroundColor(M3Color.Adaptive.onSurfaceVariant)
+                    }
+                }
+
                 if let amount = parsedAmount {
                     parsedResultCard(amount: amount)
                 }
@@ -107,10 +123,30 @@ struct VoiceInputView: View {
                     Text(L("识别金额"))
                         .font(M3Typography.labelMedium)
                         .foregroundColor(M3Color.Adaptive.onSurfaceVariant)
+                    if usedAI {
+                        Text("GPT")
+                            .font(M3Typography.labelSmall)
+                            .foregroundColor(.white)
+                            .padding(.horizontal, M3Spacing.sm)
+                            .padding(.vertical, 2)
+                            .background(Color(hex: "10A37F"))
+                            .clipShape(Capsule())
+                    }
                     Spacer()
                     Text(amount.currencyString)
                         .font(M3Typography.headlineSmall)
-                        .foregroundColor(M3Color.Adaptive.primary)
+                        .foregroundColor(parsedIsIncome ? .green : M3Color.Adaptive.primary)
+                }
+                if parsedIsIncome {
+                    HStack {
+                        Text(L("类型"))
+                            .font(M3Typography.labelMedium)
+                            .foregroundColor(M3Color.Adaptive.onSurfaceVariant)
+                        Spacer()
+                        Text(L("收入"))
+                            .font(M3Typography.bodyMedium)
+                            .foregroundColor(.green)
+                    }
                 }
                 if let note = parsedNote, !note.isEmpty {
                     HStack {
@@ -121,6 +157,18 @@ struct VoiceInputView: View {
                         Text(note)
                             .font(M3Typography.bodyMedium)
                             .foregroundColor(M3Color.Adaptive.onSurface)
+                            .multilineTextAlignment(.trailing)
+                    }
+                }
+                if let cat = parsedCategory {
+                    HStack {
+                        Text(L("分类"))
+                            .font(M3Typography.labelMedium)
+                            .foregroundColor(M3Color.Adaptive.onSurfaceVariant)
+                        Spacer()
+                        Label(cat.localizedName, systemImage: cat.icon)
+                            .font(M3Typography.bodyMedium)
+                            .foregroundColor(Color(hex: cat.colorHex))
                     }
                 }
             }
@@ -164,6 +212,7 @@ struct VoiceInputView: View {
                 voiceService.recognizedText = ""
                 parsedAmount = nil
                 parsedNote = nil
+                parsedCategory = nil
                 saveError = nil
             }
 
@@ -181,15 +230,61 @@ struct VoiceInputView: View {
     private func toggleRecording() {
         if voiceService.isRecording {
             voiceService.stopRecording()
-            let result = voiceService.parseExpenseFromVoice()
-            parsedAmount = result.amount
-            parsedNote = result.note
+
+            let localResult = voiceService.parseExpenseFromVoice()
+            parsedAmount = localResult.amount
+            parsedNote = localResult.note
+            parsedIsIncome = false
+            usedAI = false
+
+            Task {
+                let hasKey = await OpenAIOCRService.shared.hasAPIKey
+                guard hasKey, !voiceService.recognizedText.isEmpty else { return }
+
+                await MainActor.run { isParsingWithAI = true }
+
+                do {
+                    let aiResult = try await OpenAIOCRService.shared.parseExpenseFromText(voiceService.recognizedText)
+                    let isIncome = aiResult.isIncome
+                    let description = aiResult.note ?? voiceService.recognizedText
+                    let cats = await MainActor.run {
+                        isIncome ? incomeCategories : expenseCategories
+                    }
+                    let matched = await OpenAIOCRService.shared.suggestCategory(
+                        for: description, isIncome: isIncome, categories: cats.map(\.name)
+                    )
+
+                    await MainActor.run {
+                        if let amount = aiResult.amount {
+                            parsedAmount = amount
+                        }
+                        if let note = aiResult.note, !note.isEmpty {
+                            parsedNote = note
+                        }
+                        parsedIsIncome = isIncome
+                        if let matched {
+                            parsedCategory = cats.first {
+                                $0.name == matched || $0.localizedName == matched
+                            }
+                        }
+                        usedAI = true
+                        isParsingWithAI = false
+                    }
+                } catch {
+                    await MainActor.run { isParsingWithAI = false }
+                }
+            }
         } else {
+            parsedAmount = nil
+            parsedNote = nil
+            parsedIsIncome = false
+            parsedCategory = nil
+            usedAI = false
+            saveError = nil
             try? voiceService.startRecording()
         }
     }
 
-    // I6: Actually save the voice-recognized expense
     private func saveVoiceExpense() {
         guard let amount = parsedAmount, amount > 0 else { return }
 
@@ -197,6 +292,8 @@ struct VoiceInputView: View {
             amount: amount,
             note: parsedNote ?? voiceService.recognizedText,
             date: Date(),
+            isIncome: parsedIsIncome,
+            category: parsedCategory,
             sourceType: .voice
         )
         modelContext.insert(expense)

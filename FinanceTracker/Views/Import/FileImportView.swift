@@ -1,5 +1,8 @@
 import SwiftUI
 import UniformTypeIdentifiers
+#if os(iOS)
+import PDFKit
+#endif
 
 struct FileImportView: View {
     @Environment(\.modelContext) private var modelContext
@@ -8,6 +11,7 @@ struct FileImportView: View {
     @State private var showFilePicker = false
     @State private var importedCount = 0
     @State private var showResult = false
+    @State private var usedAI = false
 
     var body: some View {
         NavigationStack {
@@ -65,7 +69,7 @@ struct FileImportView: View {
     private var processingView: some View {
         VStack(spacing: M3Spacing.md) {
             ProgressView()
-            Text(L("正在处理文件..."))
+            Text(usedAI ? L("AI 识别中...") : L("正在处理文件..."))
                 .font(M3Typography.bodyMedium)
                 .foregroundColor(M3Color.Adaptive.onSurfaceVariant)
         }
@@ -77,6 +81,15 @@ struct FileImportView: View {
             HStack {
                 Text(L("解析结果"))
                     .font(M3Typography.titleMedium)
+                if usedAI {
+                    Text("GPT")
+                        .font(M3Typography.labelSmall)
+                        .foregroundColor(.white)
+                        .padding(.horizontal, M3Spacing.sm)
+                        .padding(.vertical, 2)
+                        .background(Color(hex: "10A37F"))
+                        .clipShape(Capsule())
+                }
                 Spacer()
                 Text("\(viewModel.importedExpenses.count) \(L("条记录"))")
                     .font(M3Typography.labelMedium)
@@ -138,25 +151,132 @@ struct FileImportView: View {
         case .success(let urls):
             guard let url = urls.first else { return }
             viewModel.isProcessing = true
+            usedAI = false
 
-            guard url.startAccessingSecurityScopedResource() else { return }
-            defer { url.stopAccessingSecurityScopedResource() }
+            guard url.startAccessingSecurityScopedResource() else {
+                viewModel.isProcessing = false
+                return
+            }
 
-            if let content = try? String(contentsOf: url, encoding: .utf8) {
-                if url.pathExtension.lowercased() == "csv" {
+            let ext = url.pathExtension.lowercased()
+
+            if ext == "csv" {
+                if let content = try? String(contentsOf: url, encoding: .utf8) {
                     do {
                         importedCount = try DataExportService.importFromCSV(content, modelContext: modelContext)
                         showResult = true
                     } catch {}
+                }
+                url.stopAccessingSecurityScopedResource()
+                viewModel.isProcessing = false
+                return
+            }
+
+            Task {
+                let hasKey = await OpenAIOCRService.shared.hasAPIKey
+
+                if ext == "pdf" {
+                    let images = OpenAIOCRService.renderPDFToImages(url: url)
+                    url.stopAccessingSecurityScopedResource()
+
+                    if hasKey && !images.isEmpty {
+                        await MainActor.run { usedAI = true }
+                        await processImagesWithAI(images)
+                    } else if !images.isEmpty {
+                        await processImagesWithLocalOCR(images)
+                    } else {
+                        await MainActor.run {
+                            viewModel.errorMessage = L("无法读取PDF文件")
+                            viewModel.isProcessing = false
+                        }
+                    }
+                } else if ["jpg", "jpeg", "png", "heic", "heif", "webp"].contains(ext) {
+                    let imageData = try? Data(contentsOf: url)
+                    url.stopAccessingSecurityScopedResource()
+
+                    if let data = imageData, let image = UIImage(data: data) {
+                        if hasKey {
+                            await MainActor.run { usedAI = true }
+                            await processImagesWithAI([image])
+                        } else {
+                            await processImagesWithLocalOCR([image])
+                        }
+                    } else {
+                        await MainActor.run {
+                            viewModel.errorMessage = L("无法读取图片文件")
+                            viewModel.isProcessing = false
+                        }
+                    }
                 } else {
-                    viewModel.recognizedText = content
-                    viewModel.parseRecognizedText()
+                    let content = try? String(contentsOf: url, encoding: .utf8)
+                    url.stopAccessingSecurityScopedResource()
+
+                    if let text = content, !text.isEmpty {
+                        if hasKey {
+                            await MainActor.run { usedAI = true }
+                            await viewModel.parseWithAI(text)
+                        } else {
+                            await MainActor.run {
+                                viewModel.recognizedText = text
+                                viewModel.parseRecognizedText()
+                                viewModel.isProcessing = false
+                            }
+                        }
+                    } else {
+                        await MainActor.run {
+                            viewModel.errorMessage = L("无法读取文件内容")
+                            viewModel.isProcessing = false
+                        }
+                    }
                 }
             }
-            viewModel.isProcessing = false
 
         case .failure:
             viewModel.errorMessage = L("文件导入失败")
+        }
+    }
+
+    private func processImagesWithAI(_ images: [UIImage]) async {
+        do {
+            let expenses = try await OpenAIOCRService.shared.extractExpensesFromImages(images)
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "yyyy-MM-dd"
+
+            await MainActor.run {
+                viewModel.importedExpenses = expenses.map { item in
+                    ImportViewModel.ParsedExpense(
+                        amount: item.amount,
+                        note: item.note,
+                        date: item.date.flatMap { dateFormatter.date(from: $0) } ?? Date(),
+                        isIncome: item.isIncome
+                    )
+                }
+                viewModel.isProcessing = false
+            }
+        } catch {
+            await MainActor.run {
+                viewModel.errorMessage = L("AI识别失败") + ": \(error.localizedDescription)"
+                viewModel.isProcessing = false
+            }
+        }
+    }
+
+    private func processImagesWithLocalOCR(_ images: [UIImage]) async {
+        var allText = ""
+        for image in images {
+            if let text = try? await OCRService.shared.recognizeText(from: image) {
+                allText += text + "\n"
+            }
+        }
+
+        await MainActor.run {
+            if allText.isEmpty {
+                viewModel.errorMessage = L("无法识别文件内容")
+            } else {
+                viewModel.recognizedText = allText
+                viewModel.parseRecognizedText()
+            }
+            viewModel.isProcessing = false
         }
     }
 

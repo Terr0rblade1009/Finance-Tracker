@@ -1,4 +1,5 @@
 import SwiftUI
+import SwiftData
 #if canImport(UIKit)
 import UIKit
 #endif
@@ -9,6 +10,7 @@ import AVFoundation
 struct CameraReceiptView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
+    @Query(filter: #Predicate<ExpenseCategory> { !$0.isIncome }) private var expenseCategories: [ExpenseCategory]
     @State private var capturedImage: UIImage?
     @State private var recognizedText = ""
     @State private var recognizedAmount: Decimal?
@@ -20,6 +22,7 @@ struct CameraReceiptView: View {
     @State private var merchantName: String?
     @State private var receiptSummary: String?
     @State private var usedAI = false
+    @State private var suggestedCategoryName: String?
 
     var body: some View {
         NavigationStack {
@@ -64,7 +67,9 @@ struct CameraReceiptView: View {
                     prefillAmount: ocrPrefillAmount,
                     prefillNote: ocrPrefillNote,
                     prefillReceiptImageData: capturedImage?.jpegData(compressionQuality: 0.6),
-                    prefillSourceType: .ocr
+                    prefillSourceType: .ocr,
+                    prefillCategoryName: suggestedCategoryName,
+                    onSaved: { dismiss() }
                 )
             }
         }
@@ -258,12 +263,24 @@ struct CameraReceiptView: View {
     private func processWithOpenAI(_ image: UIImage) async {
         do {
             let result = try await OpenAIOCRService.shared.extractReceiptInfo(from: image)
+            let description = [result.merchant, result.summary].compactMap { $0 }.joined(separator: " ")
+                + " " + result.items.map(\.name).joined(separator: " ")
+
             await MainActor.run {
                 recognizedAmount = result.total
                 receiptItems = result.items
                 merchantName = result.merchant
                 receiptSummary = result.summary
                 recognizedText = result.summary ?? result.items.map { "\($0.name): \($0.amount.currencyString)" }.joined(separator: "\n")
+            }
+
+            let categoryNames = await MainActor.run { expenseCategories.map(\.name) }
+            let matched = await OpenAIOCRService.shared.suggestCategory(
+                for: description, isIncome: false, categories: categoryNames
+            )
+
+            await MainActor.run {
+                suggestedCategoryName = matched
                 isProcessing = false
             }
         } catch {

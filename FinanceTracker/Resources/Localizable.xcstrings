@@ -100,6 +100,12 @@
         }
       }
     },
+    "GPT" : {
+
+    },
+    "GPT-4o" : {
+
+    },
     "JPG/PNG格式" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -143,6 +149,12 @@
           }
         }
       }
+    },
+    "sk-..." : {
+
+    },
+    "sk-...%@" : {
+
     },
     "两次密码不一致" : {
       "extractionState" : "stale",
