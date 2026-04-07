@@ -1,146 +1,181 @@
 # 记账本 - Finance Tracker
 
-一款基于 **SwiftUI + SwiftData** 构建的 iOS 记账应用，采用 **Material 3 Expressive** 设计系统，界面极简优美。
+A personal finance tracking iOS app built with **SwiftUI + SwiftData**, featuring **GPT-4o** powered smart recognition and a **Material 3 Expressive** design system.
 
-## 功能特性
+一款基于 SwiftUI + SwiftData 构建的 iOS 记账应用，集成 GPT-4o 智能识别，采用 Material 3 Expressive 设计系统。
 
-### 核心功能
-- **数字键盘记账** - 快速输入支出/收入金额
-- **二级分类系统** - 14+ 支出分类、7+ 收入分类，支持自定义
-- **固定开支管理** - 输入年度金额，自动计算月/季费用（房贷、保险、学费等）
-- **多账户管理** - 现金、银行卡、支付宝、微信等，支持账户间转账
+## Features
 
-### 智能导入
-- **拍照记账** - 拍摄收据，OCR 自动识别金额
-- **截图记账** - 导入截图识别账单
-- **语音记账** - 说出消费信息，自动解析金额
-- **微信导入** - 粘贴微信对话/账单，自动提取
-- **文件导入** - 支持 CSV、PDF、JPG、PNG 格式
+### Core
+- **Numeric keypad** for quick expense/income entry
+- **Category system** — 14+ expense and 7+ income categories, fully customizable
+- **Fixed expenses** — annual amounts auto-calculated to monthly/quarterly (mortgage, insurance, tuition, etc.)
+- **Multi-account** — cash, bank card, Alipay, WeChat Pay with inter-account transfers
 
-### 数据分析
-- **多维度统计** - 月度/季度/年度分析
-- **图表可视化** - 饼图（分类构成）、柱状图（收支趋势）
-- **分类排行** - 各分类支出占比和明细
-- **数据导出** - CSV/JSON 格式导出
+### AI-Powered Smart Import (OpenAI GPT-4o)
+- **Receipt scanning** — camera or photo library → GPT-4o Vision extracts merchant, items, and totals
+- **Voice input** — speak naturally, AI parses amount, note, and income/expense type
+- **WeChat import** — paste chat/bill text, AI extracts all transactions
+- **File import** — CSV, PDF, JPG, PNG — AI-powered OCR for images and PDFs, regex fallback without API key
+- **Auto-categorization** — after recognition, AI matches each expense to the closest category from the user's list
 
-### 用户系统
-- 本地注册/登录（SwiftData 存储）
-- 个性化头像选择
-- 深色/浅色模式切换
+### Analytics
+- **Multi-period stats** — monthly, quarterly, yearly
+- **Charts** — pie chart (category breakdown), bar chart (income/expense trends)
+- **Category ranking** — per-category spend percentage and details
+- **Data export** — CSV and JSON formats
 
-## 技术架构
+### User System
+- Local registration/login with salted SHA-256 hashing (SwiftData)
+- Registration success animation before navigation
+- Personalized avatar selection
+- Dark / Light / System theme switching
+- Chinese / English language support
 
-### 技术栈
-| 层级 | 技术 |
-|------|------|
-| UI 框架 | SwiftUI (iOS 17+) |
-| 数据持久化 | SwiftData |
-| 图表 | Swift Charts |
-| OCR | Vision Framework |
-| 语音识别 | Speech Framework |
-| 设计系统 | Material 3 Expressive |
+## Tech Stack
 
-### 项目结构
+| Layer | Technology |
+|-------|-----------|
+| UI | SwiftUI (iOS 17+) |
+| Persistence | SwiftData |
+| Charts | Swift Charts |
+| AI / OCR | OpenAI GPT-4o-mini API |
+| Local OCR | Apple Vision Framework |
+| Speech | Apple Speech Framework |
+| Design System | Material 3 Expressive |
+| Build | XcodeGen (`project.yml`) |
+
+## Project Structure
+
 ```
 FinanceTracker/
-├── App/                          # App 入口
+├── App/                          # App entry point
 │   └── FinanceTrackerApp.swift
-├── DesignSystem/                 # 设计系统
-│   ├── Tokens/                   # 设计 Token
-│   │   ├── ColorTokens.swift     # M3 色彩（Light/Dark）
-│   │   ├── TypographyTokens.swift # M3 字体
-│   │   ├── SpacingTokens.swift   # 间距 + 圆角 + 阴影
-│   │   └── FigmaTokenExport.swift # Figma 兼容导出
-│   ├── Components/               # 通用组件
-│   │   ├── DSButton.swift        # 按钮（5种变体）
-│   │   ├── DSCard.swift          # 卡片（3种变体）
-│   │   ├── DSTextField.swift     # 输入框
-│   │   ├── DSChip.swift          # 标签
-│   │   ├── DSNumericKeypad.swift # 数字键盘
-│   │   ├── DSSearchBar.swift     # 搜索栏
-│   │   ├── DSFab.swift           # FAB 按钮
-│   │   └── DSBottomSheet.swift   # 底部弹窗
+├── DesignSystem/                 # Design system
+│   ├── Tokens/                   # Design tokens
+│   │   ├── ColorTokens.swift     # M3 colors (Light/Dark)
+│   │   ├── TypographyTokens.swift
+│   │   ├── SpacingTokens.swift   # Spacing + corner radii + elevation
+│   │   └── FigmaTokenExport.swift
+│   ├── Components/               # Reusable DS components
+│   │   ├── DSButton.swift        # 5 variants
+│   │   ├── DSCard.swift          # 3 variants
+│   │   ├── DSTextField.swift
+│   │   ├── DSChip.swift
+│   │   ├── DSNumericKeypad.swift
+│   │   ├── DSSearchBar.swift
+│   │   ├── DSFab.swift
+│   │   └── DSBottomSheet.swift
 │   └── Theme/
-│       └── Theme.swift           # 主题配置
-├── Models/                       # SwiftData 模型
+│       └── Theme.swift
+├── Models/                       # SwiftData models
 │   ├── User.swift
 │   ├── Expense.swift
 │   ├── ExpenseCategory.swift
 │   ├── Account.swift
 │   ├── Budget.swift
 │   └── FixedExpense.swift
-├── Views/                        # 视图层
-│   ├── Auth/                     # 登录/注册
-│   ├── Home/                     # 首页/仪表盘
-│   ├── Input/                    # 记账输入
-│   ├── Import/                   # 导入（相机/文件/语音/微信）
-│   ├── Analysis/                 # 数据分析
-│   ├── Categories/               # 分类管理
-│   ├── Accounts/                 # 账户管理
-│   ├── Settings/                 # 设置
-│   └── MainTabView.swift         # 主导航
-├── ViewModels/                   # 视图模型
+├── Views/
+│   ├── Auth/                     # Login / Register
+│   ├── Home/                     # Dashboard + calendar
+│   ├── Input/                    # Expense input + fixed expenses
+│   ├── Import/                   # Camera / File / Voice / WeChat
+│   ├── Analysis/                 # Charts and stats
+│   ├── Categories/               # Category management
+│   ├── Accounts/                 # Account management
+│   ├── Settings/                 # Settings + API key config
+│   └── MainTabView.swift
+├── ViewModels/
 │   ├── AuthViewModel.swift
 │   ├── ExpenseViewModel.swift
 │   ├── AnalysisViewModel.swift
 │   └── ImportViewModel.swift
-├── Services/                     # 服务层
-│   ├── OCRService.swift          # OCR 文字识别
-│   ├── VoiceRecognitionService.swift # 语音识别
-│   └── DataExportService.swift   # 数据导出
+├── Services/
+│   ├── OpenAIOCRService.swift    # GPT-4o Vision + text parsing + category matching
+│   ├── OCRService.swift          # Apple Vision local OCR
+│   ├── VoiceRecognitionService.swift
+│   └── DataExportService.swift
 └── Utilities/
-    └── Extensions.swift          # 通用扩展
+    ├── Extensions.swift
+    └── LanguageManager.swift
 ```
 
-## 设计系统
+## OpenAI Integration
 
-### Material 3 Expressive 设计 Token
+The app optionally integrates with OpenAI's API for enhanced accuracy. Configure your API key in **Settings → AI 识别 → OpenAI API Key**.
 
-完全兼容 Figma 设计变量，支持通过 Figma Token Studio 同步：
+| Feature | With API Key | Without API Key |
+|---------|-------------|----------------|
+| Receipt scanning | GPT-4o Vision (merchant, items, total) | Apple Vision OCR + regex |
+| Voice input | GPT parses amount + note + type | Local regex extraction |
+| File import (PDF/image) | GPT-4o Vision multi-page | Apple Vision + regex |
+| Text import | GPT extracts all transactions | Regex line-by-line |
+| Category matching | GPT auto-selects best category | Manual selection |
 
-- **Color Tokens**: `md-sys-color-*` 命名，Light/Dark 双模式
-- **Typography**: `md-sys-typescale-*` 完整字体系统
-- **Spacing**: `md-sys-spacing-*` 8pt 网格系统
-- **Shape**: `md-sys-shape-corner-*` 圆角系统
-- **Elevation**: `md-sys-elevation-level*` 阴影层级
+All AI features degrade gracefully — the app is fully functional without an API key.
 
-### Figma 同步
+## Getting Started
 
-项目内置 `FigmaTokenExport.swift`，可生成 Figma Token Studio 兼容的 JSON：
-
-```swift
-let colorTokens = FigmaDesignTokens.generateColorTokensJSON()
-let typographyTokens = FigmaDesignTokens.generateTypographyTokensJSON()
-let fullTokens = FigmaDesignTokens.generateFullTokensJSON()
-```
-
-## 开始使用
-
-### 环境要求
+### Requirements
 - Xcode 15.0+
 - iOS 17.0+
 - Swift 5.9+
 
-### 构建步骤
+### Build
 
-1. 在 Xcode 中打开项目：
-   ```bash
-   open FinanceTracker.xcodeproj
-   ```
-   
-   或创建新 Xcode 项目并将 `FinanceTracker/` 文件夹拖入。
+```bash
+open FinanceTracker.xcodeproj
+```
 
-2. 选择 iOS 模拟器或真机目标
+Select an iOS simulator or device, then press `Cmd + R`.
 
-3. 按 `Cmd + R` 运行
+### Permissions
+The app requests the following permissions (configured in Info.plist):
+- Camera (receipt scanning)
+- Microphone (voice input)
+- Speech Recognition
+- Photo Library
 
-### 权限配置
-应用需要以下权限（已在 Info.plist 中配置）：
-- 相机（拍照记账）
-- 麦克风（语音记账）
-- 语音识别
-- 相册访问
+### TestFlight
 
-## 许可证
+```bash
+# Archive
+xcodebuild clean archive \
+  -project FinanceTracker.xcodeproj \
+  -scheme FinanceTracker \
+  -configuration Release \
+  -archivePath ./build/FinanceTracker.xcarchive \
+  -destination "generic/platform=iOS"
+
+# Export IPA
+xcodebuild -exportArchive \
+  -archivePath ./build/FinanceTracker.xcarchive \
+  -exportPath ./build/export \
+  -exportOptionsPlist ExportOptions.plist
+```
+
+Then upload via Xcode Organizer or `xcrun altool`.
+
+## Design System
+
+### Material 3 Expressive Tokens
+
+Fully compatible with Figma design variables, synced via Figma Token Studio:
+
+- **Color**: `md-sys-color-*` — Light/Dark modes
+- **Typography**: `md-sys-typescale-*` — full type scale
+- **Spacing**: `md-sys-spacing-*` — 8pt grid
+- **Shape**: `md-sys-shape-corner-*` — corner radii
+- **Elevation**: `md-sys-elevation-level*` — shadow levels
+
+### Figma Sync
+
+Built-in `FigmaTokenExport.swift` generates Figma Token Studio compatible JSON:
+
+```swift
+let tokens = FigmaDesignTokens.generateFullTokensJSON()
+```
+
+## License
 
 MIT License
