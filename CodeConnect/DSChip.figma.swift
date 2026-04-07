@@ -15,7 +15,13 @@ struct DSChip_connection: FigmaConnect {
     )
     var chipVariant: DSChipVariant = .filter
 
-    @FigmaBoolean("selected")
+    @FigmaEnum(
+        "selected",
+        mapping: [
+            "true": true,
+            "false": false,
+        ]
+    )
     var isSelected: Bool = false
 
     @FigmaString("Label")

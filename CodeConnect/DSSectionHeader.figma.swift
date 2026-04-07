@@ -1,20 +1,28 @@
 import SwiftUI
 import Figma
 
-struct DSSectionHeader_connection: FigmaConnect {
+struct DSSectionHeader_withTrailing: FigmaConnect {
     let component = DSSectionHeader.self
     let figmaNodeUrl = "https://www.figma.com/design/bRtV6gACFbALKiKHXtNsBD/FinanceTracker?node-id=224-8"
-
-    @FigmaBoolean("hasTrailing", hideDefault: true)
-    var hasTrailing: Bool = false
+    let variant = ["hasTrailing": "true"]
 
     var body: some View {
         DSSectionHeader(
             title: "分类",
-            trailing: self.hasTrailing ? "查看全部" : nil,
-            trailingAction: self.hasTrailing ? { } : nil
+            trailing: "查看全部",
+            trailingAction: { }
         )
     }
 }
 
-#Preview { DSSectionHeader_connection() }
+struct DSSectionHeader_noTrailing: FigmaConnect {
+    let component = DSSectionHeader.self
+    let figmaNodeUrl = "https://www.figma.com/design/bRtV6gACFbALKiKHXtNsBD/FinanceTracker?node-id=224-8"
+    let variant = ["hasTrailing": "false"]
+
+    var body: some View {
+        DSSectionHeader(
+            title: "分类"
+        )
+    }
+}

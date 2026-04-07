@@ -1,12 +1,10 @@
 import Figma
 import SwiftUI
 
-struct DSEmptyStateFigma: FigmaConnect {
+struct DSEmptyState_withSubtitle: FigmaConnect {
     let component = DSEmptyState.self
     let figmaNodeUrl = "https://www.figma.com/design/bRtV6gACFbALKiKHXtNsBD/FinanceTracker?node-id=134-9"
-
-    @FigmaBoolean("hasSubtitle", hideDefault: true)
-    var hasSubtitle: Bool = false
+    let variant = ["hasSubtitle": "true"]
 
     @FigmaString("Title")
     var title: String = "暂无数据"
@@ -21,7 +19,26 @@ struct DSEmptyStateFigma: FigmaConnect {
         DSEmptyState(
             icon: self.iconName,
             title: self.title,
-            subtitle: self.hasSubtitle ? self.subtitle : nil
+            subtitle: self.subtitle
+        )
+    }
+}
+
+struct DSEmptyState_noSubtitle: FigmaConnect {
+    let component = DSEmptyState.self
+    let figmaNodeUrl = "https://www.figma.com/design/bRtV6gACFbALKiKHXtNsBD/FinanceTracker?node-id=134-9"
+    let variant = ["hasSubtitle": "false"]
+
+    @FigmaString("Title")
+    var title: String = "暂无数据"
+
+    @FigmaString("Icon Name")
+    var iconName: String = "tray"
+
+    var body: some View {
+        DSEmptyState(
+            icon: self.iconName,
+            title: self.title
         )
     }
 }
