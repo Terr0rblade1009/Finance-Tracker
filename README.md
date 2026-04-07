@@ -1,8 +1,8 @@
-# 记账本 - Finance Tracker
+[English](README.md) | [中文](README_zh.md)
+
+# Finance Tracker
 
 A personal finance tracking iOS app built with **SwiftUI + SwiftData**, featuring **GPT-4o** powered smart recognition and a **Material 3 Expressive** design system.
-
-一款基于 SwiftUI + SwiftData 构建的 iOS 记账应用，集成 GPT-4o 智能识别，采用 Material 3 Expressive 设计系统。
 
 ## Features
 
@@ -102,7 +102,7 @@ FinanceTracker/
 
 ## OpenAI Integration
 
-The app optionally integrates with OpenAI's API for enhanced accuracy. Configure your API key in **Settings → AI 识别 → OpenAI API Key**.
+The app optionally integrates with OpenAI's API for enhanced accuracy. Configure your API key in **Settings → AI Recognition → OpenAI API Key**.
 
 | Feature | With API Key | Without API Key |
 |---------|-------------|----------------|
@@ -180,7 +180,8 @@ let tokens = FigmaDesignTokens.generateFullTokensJSON()
 
 | Resource | Link |
 |----------|------|
-| Design System & App Screens | [Figma File](https://www.figma.com/design/bRtV6gACFbALKiKHXtNsBD/FinanceTracker) |
+| Component Library (Design System) | [Figma File](https://www.figma.com/design/bRtV6gACFbALKiKHXtNsBD/FinanceTracker) |
+| App Screens | [Figma File](https://www.figma.com/design/WtLHNC43uTh6c8jZDiLLUz/FinanceTracker-App-Screens) |
 | Dev Mode (inspect components) | [Dev Mode](https://www.figma.com/design/bRtV6gACFbALKiKHXtNsBD/FinanceTracker?m=dev) |
 
 ### Figma Code Connect
