@@ -4,6 +4,14 @@
 
 A personal finance tracking iOS app built with **SwiftUI + SwiftData**, featuring **GPT-4o** powered smart recognition and a **Material 3 Expressive** design system.
 
+## Figma
+
+| Resource | Link |
+|----------|------|
+| Component Library (Design System) | [Figma File](https://www.figma.com/design/bRtV6gACFbALKiKHXtNsBD/FinanceTracker) |
+| App Screens | [Figma File](https://www.figma.com/design/WtLHNC43uTh6c8jZDiLLUz/FinanceTracker-App-Screens) |
+| Dev Mode (inspect components) | [Dev Mode](https://www.figma.com/design/bRtV6gACFbALKiKHXtNsBD/FinanceTracker?m=dev) |
+
 ## Features
 
 ### Core
