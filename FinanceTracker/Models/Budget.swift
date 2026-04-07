@@ -4,29 +4,29 @@ import SwiftData
 @Model
 final class Budget {
     @Attribute(.unique) var id: UUID
-    var amount: Double
-    var period: String
+    var amount: Decimal
+    var period: Period
     var startDate: Date
-    var categoryId: UUID?
     var isActive: Bool
 
+    @Relationship var category: ExpenseCategory?
     @Relationship(inverse: \User.budgets) var user: User?
 
     init(
-        amount: Double,
-        period: String = "monthly",
+        amount: Decimal,
+        period: Period = .monthly,
         startDate: Date = Date(),
-        categoryId: UUID? = nil
+        category: ExpenseCategory? = nil
     ) {
         self.id = UUID()
         self.amount = amount
         self.period = period
         self.startDate = startDate
-        self.categoryId = categoryId
+        self.category = category
         self.isActive = true
     }
 
-    enum Period: String, CaseIterable {
+    enum Period: String, CaseIterable, Codable {
         case weekly = "weekly"
         case monthly = "monthly"
         case quarterly = "quarterly"

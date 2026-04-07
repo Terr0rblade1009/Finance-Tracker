@@ -3,10 +3,11 @@ import SwiftData
 
 struct LoginView: View {
     @Environment(\.modelContext) private var modelContext
-    @State private var viewModel = AuthViewModel()
+    @Environment(AuthViewModel.self) private var viewModel
     @State private var showRegister = false
 
     var body: some View {
+        @Bindable var viewModel = viewModel
         NavigationStack {
             ScrollView {
                 VStack(spacing: M3Spacing.xxl) {

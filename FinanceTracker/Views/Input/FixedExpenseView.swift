@@ -6,8 +6,8 @@ struct FixedExpenseView: View {
     @Query private var fixedExpenses: [FixedExpense]
     @State private var showAdd = false
 
-    private var totalMonthly: Double {
-        fixedExpenses.filter(\.isActive).reduce(0) { $0 + $1.monthlyAmount }
+    private var totalMonthly: Decimal {
+        fixedExpenses.filter(\.isActive).reduce(Decimal.zero) { $0 + $1.monthlyAmount }
     }
 
     var body: some View {
@@ -72,12 +72,13 @@ struct AddFixedExpenseSheet: View {
     @State private var annualAmount = ""
     @State private var selectedFrequency = FixedExpense.Frequency.annual
     @State private var selectedCategory = ExpenseCategory.fixedExpenseCategories().first!
+    @State private var errorMessage: String?
 
     private let fixedCategories = ExpenseCategory.fixedExpenseCategories()
 
-    var computedMonthly: Double {
-        let annual = Double(annualAmount) ?? 0
-        return annual / 12.0
+    var computedMonthly: Decimal {
+        let annual = Decimal(string: annualAmount) ?? Decimal.zero
+        return annual / 12
     }
 
     var body: some View {
@@ -93,7 +94,7 @@ struct AddFixedExpenseSheet: View {
                         keyboardType: .decimalPad
                     )
 
-                    if let amount = Double(annualAmount), amount > 0 {
+                    if let amount = Decimal(string: annualAmount), amount > 0 {
                         DSCard(variant: .outlined) {
                             HStack {
                                 VStack(alignment: .leading) {
@@ -163,13 +164,18 @@ struct AddFixedExpenseSheet: View {
                     ) {
                         let expense = FixedExpense(
                             name: name,
-                            annualAmount: Double(annualAmount) ?? 0,
+                            annualAmount: Decimal(string: annualAmount) ?? Decimal.zero,
+                            frequency: selectedFrequency,
                             categoryIcon: selectedCategory.icon,
                             categoryColorHex: selectedCategory.colorHex
                         )
                         modelContext.insert(expense)
-                        try? modelContext.save()
-                        dismiss()
+                        do {
+                            try modelContext.save()
+                            dismiss()
+                        } catch {
+                            errorMessage = L("保存失败") + "：\(error.localizedDescription)"
+                        }
                     }
                 }
                 .padding(M3Spacing.xl)

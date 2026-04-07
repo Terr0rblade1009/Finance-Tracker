@@ -12,6 +12,30 @@ struct ExpenseInputView: View {
     @State private var selectedTab = 0
     @State private var showDatePicker = false
     @State private var showSuccess = false
+    @State private var errorMessage: String?
+
+    private let prefillAmount: Decimal?
+    private let prefillNote: String?
+    private let prefillReceiptImageData: Data?
+    private let prefillSourceType: Expense.SourceType?
+    private let prefillCategoryName: String?
+    private let onSaved: (() -> Void)?
+
+    init(
+        prefillAmount: Decimal? = nil,
+        prefillNote: String? = nil,
+        prefillReceiptImageData: Data? = nil,
+        prefillSourceType: Expense.SourceType? = nil,
+        prefillCategoryName: String? = nil,
+        onSaved: (() -> Void)? = nil
+    ) {
+        self.prefillAmount = prefillAmount
+        self.prefillNote = prefillNote
+        self.prefillReceiptImageData = prefillReceiptImageData
+        self.prefillSourceType = prefillSourceType
+        self.prefillCategoryName = prefillCategoryName
+        self.onSaved = onSaved
+    }
 
     private var categories: [ExpenseCategory] {
         selectedTab == 0 ? expenseCategories : incomeCategories
@@ -32,6 +56,12 @@ struct ExpenseInputView: View {
                         accountSelector
                         noteField
                         dateSelector
+
+                        if let errorMessage {
+                            Text(errorMessage)
+                                .font(M3Typography.bodySmall)
+                                .foregroundColor(M3Color.Adaptive.error)
+                        }
                     }
                     .padding(.horizontal, M3Spacing.base)
                     .padding(.bottom, 300)
@@ -54,6 +84,25 @@ struct ExpenseInputView: View {
             .overlay {
                 if showSuccess {
                     successOverlay
+                }
+            }
+            .onAppear {
+                if let amount = prefillAmount {
+                    viewModel.amount = "\(amount)"
+                }
+                if let note = prefillNote {
+                    viewModel.note = note
+                }
+                if let imageData = prefillReceiptImageData {
+                    viewModel.receiptImageData = imageData
+                }
+                if let source = prefillSourceType {
+                    viewModel.sourceType = source
+                }
+                if let catName = prefillCategoryName {
+                    viewModel.selectedCategory = categories.first {
+                        $0.name == catName || $0.localizedName == catName
+                    }
                 }
             }
         }
@@ -169,6 +218,7 @@ struct ExpenseInputView: View {
         .onAppear {
             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                 withAnimation { showSuccess = false }
+                onSaved?()
                 dismiss()
             }
         }
@@ -177,9 +227,10 @@ struct ExpenseInputView: View {
     private func saveExpense() {
         do {
             try viewModel.saveExpense(modelContext: modelContext)
+            errorMessage = nil
             withAnimation(.spring) { showSuccess = true }
         } catch {
-            // Handle error
+            errorMessage = L("保存失败") + "：\(error.localizedDescription)"
         }
     }
 }

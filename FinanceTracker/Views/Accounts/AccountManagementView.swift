@@ -7,8 +7,8 @@ struct AccountManagementView: View {
     @State private var showAddAccount = false
     @State private var showTransfer = false
 
-    private var totalBalance: Double {
-        accounts.reduce(0) { $0 + $1.balance }
+    private var totalBalance: Decimal {
+        accounts.reduce(Decimal.zero) { $0 + $1.balance }
     }
 
     var body: some View {
@@ -49,7 +49,7 @@ struct AccountManagementView: View {
                     icon: account.icon,
                     iconColor: Color(hex: account.colorHex),
                     title: account.localizedName,
-                    subtitle: Account.AccountType(rawValue: account.accountType)?.displayName ?? account.accountType,
+                    subtitle: account.accountType.displayName,
                     trailingTop: account.balance.currencyString,
                     trailingTopColor: account.balance >= 0 ? M3Color.Adaptive.onSurface : M3Color.Adaptive.error
                 )
@@ -66,6 +66,7 @@ struct AddAccountSheet: View {
     @State private var name = ""
     @State private var balance = ""
     @State private var selectedType = Account.AccountType.bankCard
+    @State private var errorMessage: String?
 
     var body: some View {
         NavigationStack {
@@ -119,12 +120,16 @@ struct AddAccountSheet: View {
                             name: name,
                             icon: selectedType.icon,
                             colorHex: selectedType.colorHex,
-                            balance: Double(balance) ?? 0,
-                            accountType: selectedType.rawValue
+                            balance: Decimal(string: balance) ?? Decimal.zero,
+                            accountType: selectedType
                         )
                         modelContext.insert(account)
-                        try? modelContext.save()
-                        dismiss()
+                        do {
+                            try modelContext.save()
+                            dismiss()
+                        } catch {
+                            errorMessage = L("保存失败") + "：\(error.localizedDescription)"
+                        }
                     }
                 }
                 .padding(M3Spacing.xl)
@@ -150,6 +155,7 @@ struct TransferSheet: View {
     @State private var fromAccount: Account?
     @State private var toAccount: Account?
     @State private var amount = ""
+    @State private var errorMessage: String?
 
     var body: some View {
         NavigationStack {
@@ -167,6 +173,7 @@ struct TransferSheet: View {
                     selectedId: fromAccount?.id
                 ) { id in
                     fromAccount = accounts.first { $0.id == id }
+                    errorMessage = nil
                 }
 
                 Image(systemName: "arrow.down.circle.fill")
@@ -186,9 +193,16 @@ struct TransferSheet: View {
                     selectedId: toAccount?.id
                 ) { id in
                     toAccount = accounts.first { $0.id == id }
+                    errorMessage = nil
                 }
 
                 DSTextField(label: L("转账金额"), text: $amount, icon: "yensign.circle", keyboardType: .decimalPad)
+
+                if let errorMessage {
+                    Text(errorMessage)
+                        .font(M3Typography.bodySmall)
+                        .foregroundColor(M3Color.Adaptive.error)
+                }
 
                 Spacer()
 
@@ -216,10 +230,30 @@ struct TransferSheet: View {
     }
 
     private func performTransfer() {
-        guard let from = fromAccount, let to = toAccount, let transferAmount = Double(amount) else { return }
+        guard let from = fromAccount, let to = toAccount else { return }
+        guard from.id != to.id else {
+            errorMessage = L("转出和转入账户不能相同")
+            return
+        }
+        guard let transferAmount = Decimal(string: amount), transferAmount > 0 else {
+            errorMessage = L("请输入有效的转账金额")
+            return
+        }
+        guard from.balance >= transferAmount else {
+            errorMessage = L("余额不足")
+            return
+        }
+
         from.balance -= transferAmount
         to.balance += transferAmount
-        try? modelContext.save()
-        dismiss()
+        do {
+            try modelContext.save()
+            dismiss()
+        } catch {
+            // Rollback balance changes on save failure
+            from.balance += transferAmount
+            to.balance -= transferAmount
+            errorMessage = L("转账失败") + "：\(error.localizedDescription)"
+        }
     }
 }

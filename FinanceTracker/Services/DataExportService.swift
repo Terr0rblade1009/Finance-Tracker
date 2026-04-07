@@ -4,20 +4,21 @@ import UniformTypeIdentifiers
 
 class DataExportService {
 
+    // I5: Use fixed internal keys for CSV so import works across languages
     static func exportToCSV(expenses: [Expense]) -> String {
-        var csv = L("日期,类型,分类,金额,备注,账户,来源") + "\n"
+        var csv = "date,type,category,amount,note,account,source\n"
 
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm"
 
         for expense in expenses {
             let date = dateFormatter.string(from: expense.date)
-            let type = expense.isIncome ? L("收入") : L("支出")
-            let category = expense.category?.localizedName ?? L("未分类")
-            let amount = String(format: "%.2f", expense.amount)
+            let type = expense.isIncome ? "income" : "expense"
+            let category = expense.category?.name ?? ""
+            let amount = NSDecimalNumber(decimal: expense.amount).stringValue
             let note = expense.note.replacingOccurrences(of: ",", with: "，")
-            let account = expense.account?.localizedName ?? ""
-            let source = Expense.SourceType(rawValue: expense.sourceType)?.displayName ?? expense.sourceType
+            let account = expense.account?.name ?? ""
+            let source = expense.sourceType.rawValue
             csv += "\(date),\(type),\(category),\(amount),\(note),\(account),\(source)\n"
         }
 
@@ -29,7 +30,7 @@ class DataExportService {
             let date: String
             let isIncome: Bool
             let category: String
-            let amount: Double
+            let amount: String
             let note: String
             let account: String
             let source: String
@@ -42,11 +43,11 @@ class DataExportService {
             ExpenseExport(
                 date: dateFormatter.string(from: expense.date),
                 isIncome: expense.isIncome,
-                category: expense.category?.localizedName ?? "",
-                amount: expense.amount,
+                category: expense.category?.name ?? "",
+                amount: NSDecimalNumber(decimal: expense.amount).stringValue,
                 note: expense.note,
-                account: expense.account?.localizedName ?? "",
-                source: expense.sourceType
+                account: expense.account?.name ?? "",
+                source: expense.sourceType.rawValue
             )
         }
 
@@ -55,6 +56,7 @@ class DataExportService {
         return try encoder.encode(exports)
     }
 
+    // I5: Import recognizes both old localized keys and new fixed keys
     static func importFromCSV(_ content: String, modelContext: ModelContext) throws -> Int {
         let lines = content.components(separatedBy: .newlines).filter { !$0.isEmpty }
         guard lines.count > 1 else { return 0 }
@@ -68,15 +70,16 @@ class DataExportService {
             guard fields.count >= 4 else { continue }
 
             let date = dateFormatter.date(from: fields[0]) ?? Date()
-            let isIncome = fields[1] == L("收入")
-            let amount = Double(fields[3]) ?? 0
+            let isIncome = fields[1] == "income" || fields[1] == L("收入")
+            let amount = Decimal(string: fields[3]) ?? Decimal.zero
+            guard amount > 0 else { continue }
 
             let expense = Expense(
                 amount: amount,
                 note: fields.count > 4 ? fields[4] : "",
                 date: date,
                 isIncome: isIncome,
-                sourceType: "file_import"
+                sourceType: .fileImport
             )
             modelContext.insert(expense)
             count += 1

@@ -85,7 +85,7 @@ struct AnalysisView: View {
                     data: viewModel.categoryBreakdown.map { item in
                         DSPieChartItem(
                             name: item.categoryName,
-                            amount: item.amount,
+                            amount: item.amount.doubleValue,
                             colorHex: item.categoryColorHex,
                             percentage: item.percentage
                         )
@@ -153,7 +153,7 @@ struct AnalysisView: View {
                             ForEach(viewModel.dailyTrend) { day in
                                 BarMark(
                                     x: .value(L("日期"), day.date, unit: .day),
-                                    y: .value(L("支出"), day.expense)
+                                    y: .value(L("支出"), day.expense.doubleValue)
                                 )
                                 .foregroundStyle(M3Color.Adaptive.error.opacity(0.7))
                                 .cornerRadius(M3Radius.extraSmall)
@@ -161,7 +161,7 @@ struct AnalysisView: View {
                                 if day.income > 0 {
                                     BarMark(
                                         x: .value(L("日期"), day.date, unit: .day),
-                                        y: .value(L("收入"), day.income)
+                                        y: .value(L("收入"), day.income.doubleValue)
                                     )
                                     .foregroundStyle(M3Color.Adaptive.primary.opacity(0.7))
                                     .cornerRadius(M3Radius.extraSmall)

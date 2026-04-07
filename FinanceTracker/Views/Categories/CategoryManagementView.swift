@@ -6,6 +6,9 @@ struct CategoryManagementView: View {
     @Query(sort: \ExpenseCategory.sortOrder) private var categories: [ExpenseCategory]
     @State private var selectedTab = 0
     @State private var showAddCategory = false
+    @State private var categoryToDelete: ExpenseCategory?
+    @State private var deleteAffectedCount = 0
+    @State private var errorMessage: String?
 
     private var expenseCategories: [ExpenseCategory] {
         categories.filter { !$0.isIncome && $0.parentCategoryId == nil }
@@ -37,7 +40,7 @@ struct CategoryManagementView: View {
                         .contextMenu {
                             if !category.isSystem {
                                 Button(role: .destructive) {
-                                    deleteCategory(category)
+                                    prepareDelete(category)
                                 } label: {
                                     Label(L("删除"), systemImage: "trash")
                                 }
@@ -64,6 +67,13 @@ struct CategoryManagementView: View {
                     }
                 }
                 .padding(M3Spacing.base)
+
+                if let errorMessage {
+                    Text(errorMessage)
+                        .font(M3Typography.bodySmall)
+                        .foregroundColor(M3Color.Adaptive.error)
+                        .padding(.horizontal, M3Spacing.base)
+                }
             }
         }
         .background(M3Color.Adaptive.surface)
@@ -71,12 +81,41 @@ struct CategoryManagementView: View {
         .sheet(isPresented: $showAddCategory) {
             AddCategorySheet(isIncome: selectedTab == 1)
         }
+        // I3: Confirmation dialog showing affected expense count
+        .alert(L("确认删除"), isPresented: .init(
+            get: { categoryToDelete != nil },
+            set: { if !$0 { categoryToDelete = nil } }
+        )) {
+            Button(L("取消"), role: .cancel) { categoryToDelete = nil }
+            Button(L("删除"), role: .destructive) {
+                if let cat = categoryToDelete {
+                    deleteCategory(cat)
+                }
+            }
+        } message: {
+            if deleteAffectedCount > 0 {
+                Text(String(format: L("该分类下有 %lld 条记录将变为未分类，确定要删除吗？"), deleteAffectedCount))
+            } else {
+                Text(L("确定要删除此分类吗？"))
+            }
+        }
+    }
+
+    // I3: Check affected expenses before deleting
+    private func prepareDelete(_ category: ExpenseCategory) {
+        deleteAffectedCount = category.expenses?.count ?? 0
+        categoryToDelete = category
     }
 
     private func deleteCategory(_ category: ExpenseCategory) {
         guard !category.isSystem else { return }
         modelContext.delete(category)
-        try? modelContext.save()
+        do {
+            try modelContext.save()
+        } catch {
+            errorMessage = L("删除失败") + "：\(error.localizedDescription)"
+        }
+        categoryToDelete = nil
     }
 }
 
@@ -90,6 +129,7 @@ struct AddCategorySheet: View {
     @State private var name = ""
     @State private var selectedIcon = "tag.fill"
     @State private var selectedColor = "FF8A65"
+    @State private var errorMessage: String?
 
     private let iconOptions = [
         "tag.fill", "cart.fill", "bag.fill", "cup.and.saucer.fill",
@@ -180,6 +220,12 @@ struct AddCategorySheet: View {
                         }
                     }
 
+                    if let errorMessage {
+                        Text(errorMessage)
+                            .font(M3Typography.bodySmall)
+                            .foregroundColor(M3Color.Adaptive.error)
+                    }
+
                     DSButton(
                         title: L("保存"),
                         variant: .filled,
@@ -195,8 +241,12 @@ struct AddCategorySheet: View {
                             isSystem: false
                         )
                         modelContext.insert(category)
-                        try? modelContext.save()
-                        dismiss()
+                        do {
+                            try modelContext.save()
+                            dismiss()
+                        } catch {
+                            errorMessage = L("保存失败") + "：\(error.localizedDescription)"
+                        }
                     }
                 }
                 .padding(M3Spacing.xl)

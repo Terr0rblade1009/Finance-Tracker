@@ -38,21 +38,49 @@ extension Date {
     }
 }
 
-// MARK: - Double Extensions
+// MARK: - Currency Formatter (cached, M1: respects user currency setting)
 
-extension Double {
-    var currencyString: String {
+enum CurrencyConfig {
+    private static var _formatter: NumberFormatter = {
         let formatter = NumberFormatter()
         formatter.numberStyle = .currency
-        formatter.locale = Locale(identifier: "en_SG")
-        return formatter.string(from: NSNumber(value: self)) ?? "$0.00"
+        formatter.locale = Locale(identifier: UserDefaults.standard.string(forKey: "currencyLocale") ?? "en_SG")
+        return formatter
+    }()
+
+    static var formatter: NumberFormatter { _formatter }
+
+    static func updateLocale(_ localeIdentifier: String) {
+        UserDefaults.standard.set(localeIdentifier, forKey: "currencyLocale")
+        _formatter.locale = Locale(identifier: localeIdentifier)
+    }
+}
+
+// MARK: - Decimal Extensions
+
+extension Decimal {
+    var currencyString: String {
+        CurrencyConfig.formatter.string(from: self as NSDecimalNumber) ?? "$0.00"
     }
 
     var shortCurrencyString: String {
         if self >= 10000 {
-            return String(format: "$%.1fK", self / 10000)
+            let thousands = NSDecimalNumber(decimal: self / 1000).doubleValue
+            return String(format: "$%.1fK", thousands)
         }
         return currencyString
+    }
+
+    var doubleValue: Double {
+        NSDecimalNumber(decimal: self).doubleValue
+    }
+}
+
+// MARK: - Double Extensions (display-only, for Views that receive Double)
+
+extension Double {
+    var currencyString: String {
+        Decimal(self).currencyString
     }
 }
 
@@ -72,6 +100,40 @@ extension View {
         } else {
             self
         }
+    }
+}
+
+// MARK: - Expense Aggregation (M4: shared between HomeView and AnalysisViewModel)
+
+struct CategoryBreakdownItem {
+    let name: String
+    let icon: String
+    let colorHex: String
+    let amount: Decimal
+    let count: Int
+}
+
+extension Array where Element == Expense {
+    func categoryBreakdown(isIncome: Bool = false) -> [CategoryBreakdownItem] {
+        let filtered = self.filter { $0.isIncome == isIncome }
+        var grouping: [String: (icon: String, colorHex: String, amount: Decimal, count: Int)] = [:]
+
+        for expense in filtered {
+            let name = expense.category?.localizedName ?? L("未分类")
+            let icon = expense.category?.icon ?? "ellipsis.circle.fill"
+            let colorHex = expense.category?.colorHex ?? "BDBDBD"
+            let existing = grouping[name] ?? (icon: icon, colorHex: colorHex, amount: Decimal.zero, count: 0)
+            grouping[name] = (icon: icon, colorHex: colorHex, amount: existing.amount + expense.amount, count: existing.count + 1)
+        }
+
+        return grouping.map { (name, data) in
+            CategoryBreakdownItem(name: name, icon: data.icon, colorHex: data.colorHex, amount: data.amount, count: data.count)
+        }
+        .sorted { $0.amount > $1.amount }
+    }
+
+    func total(isIncome: Bool) -> Decimal {
+        self.filter { $0.isIncome == isIncome }.reduce(Decimal.zero) { $0 + $1.amount }
     }
 }
 

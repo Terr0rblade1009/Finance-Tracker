@@ -24,11 +24,11 @@ struct ExpenseCalendarView: View {
         allExpenses.filter { $0.date >= monthStart && $0.date < monthEnd }
     }
 
-    private var dailySpending: [Int: Double] {
-        var result: [Int: Double] = [:]
+    private var dailySpending: [Int: Decimal] {
+        var result: [Int: Decimal] = [:]
         for expense in monthExpenses where !expense.isIncome {
             let day = cal.component(.day, from: expense.date)
-            result[day, default: 0] += expense.amount
+            result[day, default: Decimal.zero] += expense.amount
         }
         return result
     }
@@ -168,8 +168,8 @@ struct ExpenseCalendarView: View {
     // MARK: - Daily Summary
 
     private var dailySummary: some View {
-        let totalSpending = monthExpenses.filter { !$0.isIncome }.reduce(0) { $0 + $1.amount }
-        let totalIncome = monthExpenses.filter { $0.isIncome }.reduce(0) { $0 + $1.amount }
+        let totalSpending = monthExpenses.total(isIncome: false)
+        let totalIncome = monthExpenses.total(isIncome: true)
         let activeDays = Set(monthExpenses.filter { !$0.isIncome }.map { cal.component(.day, from: $0.date) }).count
 
         return VStack(spacing: M3Spacing.md) {
@@ -190,13 +190,12 @@ struct ExpenseCalendarView: View {
         cal.date(bySetting: .day, value: day, of: monthStart) ?? monthStart
     }
 
-    private func shortAmount(_ value: Double) -> String {
+    private func shortAmount(_ value: Decimal) -> String {
+        let d = value.doubleValue
         if value >= 10000 {
-            return String(format: "%.1fw", value / 10000)
-        } else if value >= 1000 {
-            return String(format: "%.0f", value)
+            return String(format: "%.1fw", d / 10000)
         } else {
-            return String(format: "%.0f", value)
+            return String(format: "%.0f", d)
         }
     }
 }

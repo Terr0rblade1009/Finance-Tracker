@@ -6,6 +6,7 @@ struct WeChatImportView: View {
     @State private var viewModel = ImportViewModel()
     @State private var inputText = ""
     @State private var showResult = false
+    @State private var usedAI = false
 
     var body: some View {
         NavigationStack {
@@ -85,14 +86,32 @@ struct WeChatImportView: View {
                         .strokeBorder(M3Color.Adaptive.outline, lineWidth: 1)
                 )
 
+            if viewModel.isProcessing {
+                ProgressView()
+                    .controlSize(.small)
+            }
+
             DSButton(
                 title: L("识别内容"),
                 icon: "doc.text.magnifyingglass",
                 variant: .filled,
                 size: .large,
                 isFullWidth: true,
-                isDisabled: inputText.isEmpty
+                isDisabled: inputText.isEmpty || viewModel.isProcessing
             ) {
+                parseWeChatContent()
+            }
+        }
+    }
+
+    private func parseWeChatContent() {
+        usedAI = false
+        Task {
+            let hasKey = await OpenAIOCRService.shared.hasAPIKey
+            if hasKey {
+                usedAI = true
+                await viewModel.parseWithAI(inputText)
+            } else {
                 viewModel.parseWeChatText(inputText)
             }
         }
@@ -103,6 +122,15 @@ struct WeChatImportView: View {
             HStack {
                 Text(L("识别结果"))
                     .font(M3Typography.titleMedium)
+                if usedAI {
+                    Text("GPT")
+                        .font(M3Typography.labelSmall)
+                        .foregroundColor(.white)
+                        .padding(.horizontal, M3Spacing.sm)
+                        .padding(.vertical, 2)
+                        .background(Color(hex: "10A37F"))
+                        .clipShape(Capsule())
+                }
                 Spacer()
                 Text("\(viewModel.importedExpenses.count) \(L("条"))")
                     .font(M3Typography.labelMedium)

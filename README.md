@@ -1,115 +1,118 @@
-<p align="center">
-  <img src="FinanceTracker/Assets.xcassets/AppIcon.appiconset/AppIcon.png" width="120" height="120" alt="Finance Tracker App Icon" style="border-radius: 24px;" />
-</p>
+# 记账本 - Finance Tracker
 
-<h1 align="center">Finance Tracker</h1>
+A personal finance tracking iOS app built with **SwiftUI + SwiftData**, featuring **GPT-4o** powered smart recognition and a **Material 3 Expressive** design system.
 
-<p align="center">
-  <a href="README.zh-CN.md">中文</a> | English
-</p>
-
-<p align="center">
-  A beautifully crafted iOS expense tracking app built with <strong>SwiftUI + SwiftData</strong>,<br/>
-  featuring <strong>Material 3 Expressive</strong> design and smart import capabilities.
-</p>
-
-<p align="center">
-  <img src="https://img.shields.io/badge/platform-iOS%2017%2B-blue?style=flat-square" alt="iOS 17+" />
-  <img src="https://img.shields.io/badge/swift-5.9-orange?style=flat-square" alt="Swift 5.9" />
-  <img src="https://img.shields.io/badge/design-Material%203-green?style=flat-square" alt="Material 3" />
-  <img src="https://img.shields.io/badge/data-SwiftData-purple?style=flat-square" alt="SwiftData" />
-  <img src="https://img.shields.io/badge/license-MIT-lightgrey?style=flat-square" alt="MIT License" />
-</p>
-
----
+一款基于 SwiftUI + SwiftData 构建的 iOS 记账应用，集成 GPT-4o 智能识别，采用 Material 3 Expressive 设计系统。
 
 ## Features
 
 ### Core
-- **Digital Keypad Entry** — Quick numeric input for expenses and income
-- **Two-level Categories** — 14+ expense and 7+ income categories, fully customizable
-- **Fixed Expense Manager** — Enter annual amounts, auto-calculates monthly/quarterly (mortgage, insurance, tuition, etc.)
-- **Multi-account Support** — Cash, bank cards, Alipay, WeChat, with inter-account transfers
+- **Numeric keypad** for quick expense/income entry
+- **Category system** — 14+ expense and 7+ income categories, fully customizable
+- **Fixed expenses** — annual amounts auto-calculated to monthly/quarterly (mortgage, insurance, tuition, etc.)
+- **Multi-account** — cash, bank card, Alipay, WeChat Pay with inter-account transfers
 
-### Smart Import
-- **Receipt Scanner** — Camera-based OCR using Vision Framework
-- **Screenshot Import** — Extract transaction data from bill screenshots
-- **Voice Input** — Speak your expenses, auto-parsed via Speech Framework
-- **WeChat Import** — Paste WeChat conversations/bills for auto-extraction
-- **File Import** — Supports CSV, PDF, JPG, PNG formats
+### AI-Powered Smart Import (OpenAI GPT-4o)
+- **Receipt scanning** — camera or photo library → GPT-4o Vision extracts merchant, items, and totals
+- **Voice input** — speak naturally, AI parses amount, note, and income/expense type
+- **WeChat import** — paste chat/bill text, AI extracts all transactions
+- **File import** — CSV, PDF, JPG, PNG — AI-powered OCR for images and PDFs, regex fallback without API key
+- **Auto-categorization** — after recognition, AI matches each expense to the closest category from the user's list
 
-### Data Analysis
-- **Multi-period Reports** — Monthly, quarterly, and yearly breakdowns
-- **Charts & Visualization** — Pie charts (category composition) and bar charts (spending trends) via Swift Charts
-- **Category Rankings** — Per-category spending share and details
-- **Data Export** — CSV and JSON export
+### Analytics
+- **Multi-period stats** — monthly, quarterly, yearly
+- **Charts** — pie chart (category breakdown), bar chart (income/expense trends)
+- **Category ranking** — per-category spend percentage and details
+- **Data export** — CSV and JSON formats
 
-### User Experience
-- **Local Auth** — Registration and login with SwiftData persistence
-- **Personalized Avatars** — Choose your profile icon
-- **Dark / Light Mode** — Full theme support
-- **Bilingual** — Chinese (Simplified) and English localization
-
----
+### User System
+- Local registration/login with salted SHA-256 hashing (SwiftData)
+- Registration success animation before navigation
+- Personalized avatar selection
+- Dark / Light / System theme switching
+- Chinese / English language support
 
 ## Tech Stack
 
 | Layer | Technology |
-|---|---|
-| **UI Framework** | SwiftUI (iOS 17+) |
-| **Data Persistence** | SwiftData |
-| **Charts** | Swift Charts |
-| **OCR** | Vision Framework |
-| **Speech Recognition** | Speech Framework |
-| **Design System** | Material 3 Expressive |
-| **Design Sync** | Figma Code Connect |
-
----
+|-------|-----------|
+| UI | SwiftUI (iOS 17+) |
+| Persistence | SwiftData |
+| Charts | Swift Charts |
+| AI / OCR | OpenAI GPT-4o-mini API |
+| Local OCR | Apple Vision Framework |
+| Speech | Apple Speech Framework |
+| Design System | Material 3 Expressive |
+| Build | XcodeGen (`project.yml`) |
 
 ## Project Structure
 
 ```
 FinanceTracker/
-├── App/                        # App entry point
-├── DesignSystem/
-│   ├── Tokens/                 # M3 color, typography, spacing tokens
-│   ├── Components/             # 30 reusable UI components
-│   └── Theme/                  # Theme configuration
-├── Models/                     # SwiftData models (User, Expense, Account, Budget...)
+├── App/                          # App entry point
+│   └── FinanceTrackerApp.swift
+├── DesignSystem/                 # Design system
+│   ├── Tokens/                   # Design tokens
+│   │   ├── ColorTokens.swift     # M3 colors (Light/Dark)
+│   │   ├── TypographyTokens.swift
+│   │   ├── SpacingTokens.swift   # Spacing + corner radii + elevation
+│   │   └── FigmaTokenExport.swift
+│   ├── Components/               # Reusable DS components
+│   │   ├── DSButton.swift        # 5 variants
+│   │   ├── DSCard.swift          # 3 variants
+│   │   ├── DSTextField.swift
+│   │   ├── DSChip.swift
+│   │   ├── DSNumericKeypad.swift
+│   │   ├── DSSearchBar.swift
+│   │   ├── DSFab.swift
+│   │   └── DSBottomSheet.swift
+│   └── Theme/
+│       └── Theme.swift
+├── Models/                       # SwiftData models
+│   ├── User.swift
+│   ├── Expense.swift
+│   ├── ExpenseCategory.swift
+│   ├── Account.swift
+│   ├── Budget.swift
+│   └── FixedExpense.swift
 ├── Views/
-│   ├── Auth/                   # Login & registration
-│   ├── Home/                   # Dashboard & calendar
-│   ├── Input/                  # Expense entry with numeric keypad
-│   ├── Import/                 # Camera, voice, file, WeChat import
-│   ├── Analysis/               # Reports & charts
-│   ├── Categories/             # Category management
-│   ├── Accounts/               # Account management
-│   └── Settings/               # App preferences
-├── ViewModels/                 # MVVM view logic
-├── Services/                   # OCR, voice recognition, data export
-└── Utilities/                  # Extensions & localization
+│   ├── Auth/                     # Login / Register
+│   ├── Home/                     # Dashboard + calendar
+│   ├── Input/                    # Expense input + fixed expenses
+│   ├── Import/                   # Camera / File / Voice / WeChat
+│   ├── Analysis/                 # Charts and stats
+│   ├── Categories/               # Category management
+│   ├── Accounts/                 # Account management
+│   ├── Settings/                 # Settings + API key config
+│   └── MainTabView.swift
+├── ViewModels/
+│   ├── AuthViewModel.swift
+│   ├── ExpenseViewModel.swift
+│   ├── AnalysisViewModel.swift
+│   └── ImportViewModel.swift
+├── Services/
+│   ├── OpenAIOCRService.swift    # GPT-4o Vision + text parsing + category matching
+│   ├── OCRService.swift          # Apple Vision local OCR
+│   ├── VoiceRecognitionService.swift
+│   └── DataExportService.swift
+└── Utilities/
+    ├── Extensions.swift
+    └── LanguageManager.swift
 ```
 
----
+## OpenAI Integration
 
-## Design System
+The app optionally integrates with OpenAI's API for enhanced accuracy. Configure your API key in **Settings → AI 识别 → OpenAI API Key**.
 
-Built on **Material 3 Expressive** with full Figma synchronization:
+| Feature | With API Key | Without API Key |
+|---------|-------------|----------------|
+| Receipt scanning | GPT-4o Vision (merchant, items, total) | Apple Vision OCR + regex |
+| Voice input | GPT parses amount + note + type | Local regex extraction |
+| File import (PDF/image) | GPT-4o Vision multi-page | Apple Vision + regex |
+| Text import | GPT extracts all transactions | Regex line-by-line |
+| Category matching | GPT auto-selects best category | Manual selection |
 
-- **Color Tokens** — `md-sys-color-*` naming, Light/Dark dual-mode palette
-- **Typography** — `md-sys-typescale-*` complete type scale
-- **Spacing** — `md-sys-spacing-*` 8pt grid system
-- **Shape** — `md-sys-shape-corner-*` corner radius system
-- **Elevation** — `md-sys-elevation-level*` shadow hierarchy
-- **30 Components** — Buttons, cards, chips, FABs, sheets, dialogs, charts, and more
-
-Figma Token Studio compatible JSON export is built in:
-
-```swift
-let tokens = FigmaDesignTokens.generateFullTokensJSON()
-```
-
----
+All AI features degrade gracefully — the app is fully functional without an API key.
 
 ## Getting Started
 
@@ -118,27 +121,61 @@ let tokens = FigmaDesignTokens.generateFullTokensJSON()
 - iOS 17.0+
 - Swift 5.9+
 
-### Build & Run
+### Build
 
 ```bash
-# Clone the repository
-git clone https://github.com/Terr0rblade1009/Finance-Tracker.git
-
-# Open in Xcode
 open FinanceTracker.xcodeproj
-
-# Select a simulator or device, then press Cmd + R
 ```
 
-### Permissions
-The app requests the following permissions (pre-configured in Info.plist):
-- **Camera** — Receipt scanning
-- **Microphone** — Voice input
-- **Speech Recognition** — Voice-to-text parsing
-- **Photo Library** — Image import
+Select an iOS simulator or device, then press `Cmd + R`.
 
----
+### Permissions
+The app requests the following permissions (configured in Info.plist):
+- Camera (receipt scanning)
+- Microphone (voice input)
+- Speech Recognition
+- Photo Library
+
+### TestFlight
+
+```bash
+# Archive
+xcodebuild clean archive \
+  -project FinanceTracker.xcodeproj \
+  -scheme FinanceTracker \
+  -configuration Release \
+  -archivePath ./build/FinanceTracker.xcarchive \
+  -destination "generic/platform=iOS"
+
+# Export IPA
+xcodebuild -exportArchive \
+  -archivePath ./build/FinanceTracker.xcarchive \
+  -exportPath ./build/export \
+  -exportOptionsPlist ExportOptions.plist
+```
+
+Then upload via Xcode Organizer or `xcrun altool`.
+
+## Design System
+
+### Material 3 Expressive Tokens
+
+Fully compatible with Figma design variables, synced via Figma Token Studio:
+
+- **Color**: `md-sys-color-*` — Light/Dark modes
+- **Typography**: `md-sys-typescale-*` — full type scale
+- **Spacing**: `md-sys-spacing-*` — 8pt grid
+- **Shape**: `md-sys-shape-corner-*` — corner radii
+- **Elevation**: `md-sys-elevation-level*` — shadow levels
+
+### Figma Sync
+
+Built-in `FigmaTokenExport.swift` generates Figma Token Studio compatible JSON:
+
+```swift
+let tokens = FigmaDesignTokens.generateFullTokensJSON()
+```
 
 ## License
 
-[MIT License](LICENSE) — free to use, modify, and distribute.
+MIT License

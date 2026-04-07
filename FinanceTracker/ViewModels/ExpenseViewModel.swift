@@ -14,8 +14,8 @@ class ExpenseViewModel {
     var receiptImageData: Data?
     var sourceType: Expense.SourceType = .manual
 
-    var amountValue: Double {
-        Double(amount) ?? 0
+    var amountValue: Decimal {
+        Decimal(string: amount) ?? 0
     }
 
     func saveExpense(modelContext: ModelContext) throws {
@@ -29,32 +29,50 @@ class ExpenseViewModel {
             category: selectedCategory,
             account: selectedAccount,
             receiptImageData: receiptImageData,
-            sourceType: sourceType.rawValue
+            sourceType: sourceType
         )
 
+        // Insert expense first, then update balance — if save fails,
+        // SwiftData context can be rolled back as a unit
+        modelContext.insert(expense)
+
         if let account = selectedAccount {
-            if isIncome {
-                account.balance += amountValue
-            } else {
-                account.balance -= amountValue
-            }
+            account.balance += isIncome ? amountValue : -amountValue
         }
 
-        modelContext.insert(expense)
-        try modelContext.save()
-        resetForm()
+        do {
+            try modelContext.save()
+            resetForm()
+        } catch {
+            // Rollback: undo balance change and remove the unsaved expense
+            if let account = selectedAccount {
+                account.balance -= isIncome ? amountValue : -amountValue
+            }
+            modelContext.delete(expense)
+            throw error
+        }
     }
 
     func deleteExpense(_ expense: Expense, modelContext: ModelContext) throws {
-        if let account = expense.account {
-            if expense.isIncome {
-                account.balance -= expense.amount
-            } else {
-                account.balance += expense.amount
-            }
+        let amount = expense.amount
+        let wasIncome = expense.isIncome
+        let account = expense.account
+
+        // Update balance and delete together
+        if let account {
+            account.balance -= wasIncome ? amount : -amount
         }
         modelContext.delete(expense)
-        try modelContext.save()
+
+        do {
+            try modelContext.save()
+        } catch {
+            // Rollback balance change (the delete is reverted by not saving)
+            if let account {
+                account.balance += wasIncome ? amount : -amount
+            }
+            throw error
+        }
     }
 
     func resetForm() {

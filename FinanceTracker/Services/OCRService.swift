@@ -44,15 +44,15 @@ actor OCRService {
         }
     }
 
-    func extractAmountFromReceipt(_ image: UIImage) async throws -> (amount: Double?, items: [ReceiptItem]) {
+    func extractAmountFromReceipt(_ image: UIImage) async throws -> (amount: Decimal?, items: [ReceiptItem]) {
         let text = try await recognizeText(from: image)
         return parseReceiptText(text)
     }
 
-    private func parseReceiptText(_ text: String) -> (amount: Double?, items: [ReceiptItem]) {
+    private func parseReceiptText(_ text: String) -> (amount: Decimal?, items: [ReceiptItem]) {
         let lines = text.components(separatedBy: .newlines)
         var items: [ReceiptItem] = []
-        var totalAmount: Double?
+        var totalAmount: Decimal?
 
         let totalPatterns = [
             #"合计[：:]\s*[¥￥$]?\s*(\d+\.?\d{0,2})"#,
@@ -66,7 +66,7 @@ actor OCRService {
                 if let regex = try? NSRegularExpression(pattern: pattern),
                    let match = regex.firstMatch(in: line, range: NSRange(line.startIndex..., in: line)),
                    let range = Range(match.range(at: 1), in: line) {
-                    totalAmount = Double(String(line[range]))
+                    totalAmount = Decimal(string: String(line[range]))
                 }
             }
 
@@ -75,7 +75,7 @@ actor OCRService {
                let match = regex.firstMatch(in: line, range: NSRange(line.startIndex..., in: line)),
                let nameRange = Range(match.range(at: 1), in: line),
                let amountRange = Range(match.range(at: 2), in: line),
-               let amount = Double(String(line[amountRange])) {
+               let amount = Decimal(string: String(line[amountRange])) {
                 let name = String(line[nameRange]).trimmingCharacters(in: .whitespaces)
                 items.append(ReceiptItem(name: name, amount: amount))
             }
@@ -101,5 +101,5 @@ actor OCRService {
 struct ReceiptItem: Identifiable {
     let id = UUID()
     let name: String
-    let amount: Double
+    let amount: Decimal
 }

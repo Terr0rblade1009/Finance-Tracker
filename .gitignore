@@ -16,6 +16,9 @@ DerivedData/
 *.dSYM
 *.xcuserstate
 
+# Build artifacts
+build/
+
 # Swift Package Manager
 .build/
 .swiftpm/

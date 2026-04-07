@@ -9,7 +9,19 @@ struct SettingsView: View {
     @Query private var expenses: [Expense]
     @State private var showExportSheet = false
     @State private var showDeleteConfirm = false
-    @State private var exportContent = ""
+    @State private var exportURL: URL?
+    @State private var errorMessage: String?
+    @AppStorage("openai_api_key") private var openAIAPIKey = ""
+    @State private var showAPIKeyInput = false
+    @State private var apiKeyDraft = ""
+    @State private var isTestingKey = false
+    @State private var keyTestResult: KeyTestStatus?
+
+    private enum KeyTestStatus {
+        case success
+        case invalid
+        case error(String)
+    }
 
     var body: some View {
         NavigationStack {
@@ -56,13 +68,13 @@ struct SettingsView: View {
 
                 Section(L("数据")) {
                     Button {
-                        exportData()
+                        exportData(format: .csv)
                     } label: {
                         DSSettingsRow(icon: "square.and.arrow.up.fill", title: L("导出数据 (CSV)"), color: "4DB6AC")
                     }
 
                     Button {
-                        exportJSON()
+                        exportData(format: .json)
                     } label: {
                         DSSettingsRow(icon: "doc.text.fill", title: L("导出数据 (JSON)"), color: "64B5F6")
                     }
@@ -72,6 +84,64 @@ struct SettingsView: View {
                     } label: {
                         DSSettingsRow(icon: "square.and.arrow.down.fill", title: L("导入数据"), color: "81C784")
                     }
+                }
+
+                Section {
+                    Button {
+                        apiKeyDraft = openAIAPIKey
+                        showAPIKeyInput = true
+                    } label: {
+                        HStack {
+                            DSSettingsRow(icon: "brain", title: L("OpenAI API Key"), color: "10A37F")
+                            Spacer()
+                            if openAIAPIKey.isEmpty {
+                                Text(L("未配置"))
+                                    .font(M3Typography.bodySmall)
+                                    .foregroundColor(M3Color.Adaptive.outline)
+                            } else {
+                                Text("sk-...\(String(openAIAPIKey.suffix(4)))")
+                                    .font(M3Typography.bodySmall)
+                                    .foregroundColor(M3Color.Adaptive.primary)
+                            }
+                        }
+                    }
+
+                    if !openAIAPIKey.isEmpty {
+                        Button {
+                            testOpenAIKey()
+                        } label: {
+                            HStack {
+                                DSSettingsRow(icon: "checkmark.shield.fill", title: L("测试连接"), color: "42A5F5")
+                                Spacer()
+                                if isTestingKey {
+                                    ProgressView()
+                                        .controlSize(.small)
+                                } else if let result = keyTestResult {
+                                    switch result {
+                                    case .success:
+                                        Label(L("有效"), systemImage: "checkmark.circle.fill")
+                                            .font(M3Typography.bodySmall)
+                                            .foregroundColor(.green)
+                                    case .invalid:
+                                        Label(L("无效"), systemImage: "xmark.circle.fill")
+                                            .font(M3Typography.bodySmall)
+                                            .foregroundColor(.red)
+                                    case .error(let msg):
+                                        Label(msg, systemImage: "exclamationmark.triangle.fill")
+                                            .font(M3Typography.bodySmall)
+                                            .foregroundColor(.orange)
+                                            .lineLimit(1)
+                                    }
+                                }
+                            }
+                        }
+                        .disabled(isTestingKey)
+                    }
+                } header: {
+                    Text(L("AI 识别"))
+                } footer: {
+                    Text(L("配置后拍照记账、语音记账、文件导入均可使用GPT提升识别准确度"))
+                        .font(M3Typography.bodySmall)
                 }
 
                 Section(L("快捷记账")) {
@@ -103,6 +173,7 @@ struct SettingsView: View {
 
                     Button(role: .destructive) {
                         isLoggedIn = false
+                        UserDefaults.standard.removeObject(forKey: "currentUserId")
                     } label: {
                         DSSettingsRow(icon: "rectangle.portrait.and.arrow.right", title: L("退出登录"), color: "78909C")
                     }
@@ -119,21 +190,80 @@ struct SettingsView: View {
                 Text(L("此操作不可恢复，将删除所有记账数据。"))
             }
             .sheet(isPresented: $showExportSheet) {
-                ShareSheet(text: exportContent)
+                if let url = exportURL {
+                    ShareSheet(fileURL: url)
+                }
+            }
+            .alert(L("配置 OpenAI API Key"), isPresented: $showAPIKeyInput) {
+                TextField("sk-...", text: $apiKeyDraft)
+                    .autocorrectionDisabled()
+                    .textInputAutocapitalization(.never)
+                Button(L("保存")) {
+                    openAIAPIKey = apiKeyDraft.trimmingCharacters(in: .whitespacesAndNewlines)
+                    keyTestResult = nil
+                    Task { await OpenAIOCRService.shared.setAPIKey(openAIAPIKey) }
+                }
+                if !openAIAPIKey.isEmpty {
+                    Button(L("清除"), role: .destructive) {
+                        openAIAPIKey = ""
+                        keyTestResult = nil
+                        Task { await OpenAIOCRService.shared.removeAPIKey() }
+                    }
+                }
+                Button(L("取消"), role: .cancel) {}
+            } message: {
+                Text(L("输入你的OpenAI API Key以启用AI收据识别"))
             }
         }
     }
 
-    private func exportData() {
-        exportContent = DataExportService.exportToCSV(expenses: expenses)
-        showExportSheet = true
+    private enum ExportFormat { case csv, json }
+
+    // M5: Use correct file extension for each format
+    private func exportData(format: ExportFormat) {
+        let fileName: String
+        let content: String
+
+        switch format {
+        case .csv:
+            fileName = "finance_export.csv"
+            content = DataExportService.exportToCSV(expenses: expenses)
+        case .json:
+            fileName = "finance_export.json"
+            guard let data = try? DataExportService.exportToJSON(expenses: expenses),
+                  let text = String(data: data, encoding: .utf8) else {
+                errorMessage = L("导出失败")
+                return
+            }
+            content = text
+        }
+
+        let url = FileManager.default.temporaryDirectory.appendingPathComponent(fileName)
+        do {
+            try content.write(to: url, atomically: true, encoding: .utf8)
+            exportURL = url
+            showExportSheet = true
+        } catch {
+            errorMessage = L("导出失败") + "：\(error.localizedDescription)"
+        }
     }
 
-    private func exportJSON() {
-        if let data = try? DataExportService.exportToJSON(expenses: expenses),
-           let text = String(data: data, encoding: .utf8) {
-            exportContent = text
-            showExportSheet = true
+    private func testOpenAIKey() {
+        isTestingKey = true
+        keyTestResult = nil
+        Task {
+            let result = await OpenAIOCRService.shared.testAPIKey()
+            await MainActor.run {
+                isTestingKey = false
+                switch result {
+                case .valid:
+                    keyTestResult = .success
+                case .invalid:
+                    keyTestResult = .invalid
+                case .networkError(let msg):
+                    keyTestResult = .error(msg)
+                }
+            }
         }
     }
 
@@ -141,7 +271,11 @@ struct SettingsView: View {
         for expense in expenses {
             modelContext.delete(expense)
         }
-        try? modelContext.save()
+        do {
+            try modelContext.save()
+        } catch {
+            errorMessage = L("删除失败") + "：\(error.localizedDescription)"
+        }
     }
 }
 
@@ -149,12 +283,10 @@ struct SettingsView: View {
 
 #if os(iOS)
 struct ShareSheet: UIViewControllerRepresentable {
-    let text: String
+    let fileURL: URL
 
     func makeUIViewController(context: Context) -> UIActivityViewController {
-        let tempURL = FileManager.default.temporaryDirectory.appendingPathComponent("finance_export.csv")
-        try? text.write(to: tempURL, atomically: true, encoding: .utf8)
-        return UIActivityViewController(activityItems: [tempURL], applicationActivities: nil)
+        UIActivityViewController(activityItems: [fileURL], applicationActivities: nil)
     }
 
     func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
